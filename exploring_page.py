@@ -7,6 +7,6 @@ api_request = requests.get(
 
 # pprint.pprint(api_request.content)
 soup = BeautifulSoup(api_request.content, 'html.parser')
-results = soup.find_all('main')
-#results = results.find_all('var pd')
-print(results)
+results = soup.find(id='day1')
+results = results.find(class_="mt-1 strong")
+print(results.text)
