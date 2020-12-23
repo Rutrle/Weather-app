@@ -1,8 +1,10 @@
 import tkinter
-from datetime import datetime
+import datetime
 from PIL import ImageTk, Image
 import requests
 import json
+from bs4 import BeautifulSoup
+import re
 
 
 class Weather_app:
@@ -30,38 +32,83 @@ class Weather_app:
         current_city_label.grid(row=2, column=1, columnspan=1)
         openweather_label = tkinter.Label(self.root, text='Openweather')
         openweather_label.grid(row=6, column=0, columnspan=1)
+        in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
+        in_pocasi_label.grid(row=7, column=0, columnspan=1)
 
     def fill_in_days(self):
         '''fill in informations for all days'''
+        temperatures_openweather, dates_openweather = self.get_data_openweather()
+        temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data()
+
+        weather_data = self.prepare_weather_data(
+            dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
 
         self.days_labels = []
-        self.temperatures = {}
+        self.open_temperatures = {}
+        self.in_temperatures = {}
+        for i in range(weather_data['length']):
+            self.fill_in_day(weather_data, i)
 
-        temperatures_openweather, dates_openweather = self.get_data_openweather()
-
-        for i in range(len(dates_openweather)):
-            self.fill_in_day(dates_openweather[i], temperatures_openweather[i])
-
-    def fill_in_day(self, date, temperatures):
+    def fill_in_day(self, weather_data, index):
         '''
-        date: str
+        fills in forecast information for a single day
+        :param date: str
                         date of day that hould be filled in
-        temperatures: list of integers
+        :param temperatures: list of integers
                         list of temperatures from different sites
         '''
-        self.days_labels.append(tkinter.Label(self.root, text=date))
+        self.days_labels.append(tkinter.Label(
+            self.root, text=weather_data['dates'][index]))
+
         day_position = 1 + len(self.days_labels)
 
         self.days_labels[-1].grid(row=5,
                                   column=day_position, columnspan=1, padx=10)
 
-        self.temperatures[date] = tkinter.Label(
-            self.root, text=str(temperatures) + ' °C')
-        self.temperatures[date].grid(
+        date = weather_data['dates'][index]
+
+        self.open_temperatures[date] = tkinter.Label(
+            self.root, text=str(weather_data['temperatures_openweather'][index]) + ' °C')
+        self.open_temperatures[date].grid(
             row=6, column=day_position, columnspan=1, padx=10)
 
+        self.in_temperatures[date] = tkinter.Label(
+            self.root, text=str(weather_data['temperatures_in_pocasi'][index]))
+        self.in_temperatures[date].grid(
+            row=7, column=day_position, columnspan=1, padx=10)
+
+    def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi):
+        max_length = max(len(dates_in_pocasi), len(dates_openweather))
+
+        temperatures_openweather = self.fill_in_vector(
+            temperatures_openweather, max_length)
+        dates_openweather = self.fill_in_vector(dates_openweather, max_length)
+        temperatures_in_pocasi = self.fill_in_vector(
+            temperatures_in_pocasi, max_length)
+        dates_in_pocasi = self.fill_in_vector(dates_in_pocasi, max_length)
+
+        weather_data = {}
+        weather_data['dates'] = dates_in_pocasi
+        weather_data['temperatures_openweather'] = temperatures_openweather
+        weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
+        weather_data['length'] = max_length
+
+        print(weather_data['dates'])
+
+        return weather_data
+
+    def fill_in_vector(self, vector, final_length):
+        '''
+        appends given vector with "NA" until it reaches length final_length
+        :param vector: list
+        :param final_length: int
+        '''
+        while len(vector) < final_length:
+            vector.append('NA')
+        return vector
+
     def get_data_openweather(self):
-        '''get weather data from openweather api and returns temperatures and dates lists'''
+        '''get weather forecast data from openweather api and returns temperatures and dates lists'''
         token = '3826180b6619b9e8655cd67a2fa30f52'
         url = 'http://api.openweathermap.org/data/2.5/forecast'
         city = 'praha'
@@ -80,7 +127,7 @@ class Weather_app:
             date = item['dt']
             temperature = item['main']['temp']
 
-            date = datetime.fromtimestamp(date)
+            date = datetime.datetime.fromtimestamp(date)
 
             dates.append(date)
             temperatures.append(temperature)
@@ -107,6 +154,34 @@ class Weather_app:
                 print(dates[i])
 
         return prepared_temperatures, prepared_dates
+
+    def get_in_pocasi_data(self):
+        '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
+        url = 'https://www.in-pocasi.cz/predpoved-pocasi/cz/praha/praha-324'
+        api_request = requests.get(url)
+        soup = BeautifulSoup(api_request.content, 'html.parser')
+
+        temperatures, dates = [], []
+
+        actual_temp = soup.find(class_='alfa mb-1')
+        actual_temp = actual_temp.text
+        actual_temp = re.findall(r"[-+]?\d*\.\d+|\d+", actual_temp)
+        temperatures.append(str(actual_temp[0]) + '°C')
+        dates.append(datetime.date.today().strftime('%d. %m.'))
+
+        indexes = ['day'+str(i) for i in range(1, 8)]
+        for i in range(len(indexes)):
+            try:
+                results = soup.find(id=indexes[i])
+                results = results.find(class_="mt-1 strong")
+                temperatures.append(results.text)
+                date = datetime.date.today() + datetime.timedelta(days=(i+1))
+                dates.append(date.strftime('%d. %m.'))
+
+            except AttributeError:
+                print(f"{indexes[i]} index was not found")
+
+        return temperatures, dates
 
 
 if __name__ == "__main__":
