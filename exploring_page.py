@@ -7,6 +7,6 @@ api_request = requests.get(
 
 # pprint.pprint(api_request.content)
 soup = BeautifulSoup(api_request.content, 'html.parser')
-results = soup.find_all('script')
+results = soup.find_all('main')
 #results = results.find_all('var pd')
 print(results)
