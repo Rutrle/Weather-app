@@ -22,7 +22,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('600x400')
+        self.root.geometry('650x400')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -51,10 +51,10 @@ class Weather_app:
 
     def fill_in_day(self, weather_data, index):
         '''
-        fills in forecast information for a single day
-        :param date: str
-                        date of day that hould be filled in
-        :param temperatures: list of integers
+        fills in forecast information in tkinter window for a single day
+        :param weather_data: dict
+                        dictionary with temperatures and respective dates
+        :param index: int
                         list of temperatures from different sites
         '''
         self.days_labels.append(tkinter.Label(
@@ -68,7 +68,7 @@ class Weather_app:
         date = weather_data['dates'][index]
 
         self.open_temperatures[date] = tkinter.Label(
-            self.root, text=str(weather_data['temperatures_openweather'][index]) + ' °C')
+            self.root, text=str(weather_data['temperatures_openweather'][index]))
         self.open_temperatures[date].grid(
             row=6, column=day_position, columnspan=1, padx=10)
 
@@ -147,11 +147,18 @@ class Weather_app:
     def prepare_openweather_data(self, temperatures, dates):
         '''clears and prepares data from opeweather api'''
         prepared_dates, prepared_temperatures = [], []
+        print('ssssssss')
+
         for i in range(len(dates)):
             if dates[i].strftime('%H') == '16':
                 prepared_dates.append(dates[i].strftime('%d. %m.'))
-                prepared_temperatures.append(temperatures[i])
+                prepared_temperatures.append(str(temperatures[i]) + ' °C')
                 print(dates[i])
+
+        today_date = (datetime.date.today()) - datetime.timedelta(days=1)
+        if prepared_dates[0] != today_date.strftime('%d. %m.'):
+            prepared_dates.insert(0, 'NA')
+            prepared_temperatures.insert(0, 'NA')
 
         return prepared_temperatures, prepared_dates
 
