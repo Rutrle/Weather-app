@@ -29,8 +29,15 @@ class Weather_app:
         ''' fills in tkinter window with basic info'''
         city_label = tkinter.Label(self.root, text='City:')
         city_label.grid(row=2, column=0, columnspan=1, pady=20)
-        current_city_label = tkinter.Label(self.root, text='Praha')
-        current_city_label.grid(row=2, column=1, columnspan=1)
+
+        options = ['Praha', 'Brno', 'Kvilda']
+        self.place_selection = tkinter.StringVar()
+        self.place_selection.set(options[0])
+        self.place_dropmenu = tkinter.OptionMenu(
+            self.root, self.place_selection, *options)
+        self.place_dropmenu.grid(
+            row=2, column=1, columnspan=1, padx=10)
+
         openweather_label = tkinter.Label(self.root, text='Openweather')
         openweather_label.grid(row=6, column=0, columnspan=1)
         in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
