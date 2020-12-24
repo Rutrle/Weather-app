@@ -31,6 +31,7 @@ class Weather_app:
         city_label.grid(row=2, column=0, columnspan=1, pady=20)
 
         options = ['Praha', 'Brno', 'Kvilda']
+
         self.place_selection = tkinter.StringVar()
         self.place_selection.set(options[0])
         self.place_dropmenu = tkinter.OptionMenu(
@@ -55,12 +56,15 @@ class Weather_app:
         '''
 
     def show_temperatures(self):
-        print('finding new temperatures')
+        print(self.place_selection.get())
+        self.fill_in_days()
 
     def fill_in_days(self):
         '''fill in informations for all days'''
-        temperatures_openweather, dates_openweather = self.get_data_openweather()
-        temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data()
+        temperatures_openweather, dates_openweather = self.get_data_openweather(
+            self.place_selection.get())
+        temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
+            self.place_selection.get())
 
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
@@ -82,7 +86,7 @@ class Weather_app:
         self.days_labels.append(tkinter.Label(
             self.root, text=weather_data['dates'][index]))
 
-        day_position =len(self.days_labels)
+        day_position = len(self.days_labels)
         print(day_position)
 
         self.days_labels[-1].grid(row=5,
@@ -128,7 +132,7 @@ class Weather_app:
             vector.append('NA')
         return vector
 
-    def get_data_openweather(self):
+    def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
         token = '3826180b6619b9e8655cd67a2fa30f52'
         url = 'http://api.openweathermap.org/data/2.5/forecast'
@@ -192,9 +196,11 @@ class Weather_app:
     def max_day_temp(self, temperatures, dates):
         openweather_dictionary = {}
 
-    def get_in_pocasi_data(self):
+    def get_in_pocasi_data(self, place):
         '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
-        url = 'https://www.in-pocasi.cz/predpoved-pocasi/cz/praha/praha-324'
+        urls = {'Praha': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/praha/praha-324',
+                'Kvilda': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihocesky/kvilda-4588/'}
+        url = urls[place]
         api_request = requests.get(url)
         soup = BeautifulSoup(api_request.content, 'html.parser')
 
