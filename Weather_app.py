@@ -147,7 +147,6 @@ class Weather_app:
     def prepare_openweather_data(self, temperatures, dates):
         '''clears and prepares data from opeweather api'''
         prepared_dates, prepared_temperatures = [], []
-        print('ssssssss')
 
         for i in range(len(dates)):
             if dates[i].strftime('%H') == '16':
@@ -155,12 +154,15 @@ class Weather_app:
                 prepared_temperatures.append(str(temperatures[i]) + ' °C')
                 print(dates[i])
 
-        today_date = (datetime.date.today()) - datetime.timedelta(days=1)
+        today_date = (datetime.date.today())
         if prepared_dates[0] != today_date.strftime('%d. %m.'):
             prepared_dates.insert(0, 'NA')
             prepared_temperatures.insert(0, 'NA')
 
         return prepared_temperatures, prepared_dates
+
+    def max_day_temp(self, temperatures, dates):
+        openweather_dictionary = {}
 
     def get_in_pocasi_data(self):
         '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
