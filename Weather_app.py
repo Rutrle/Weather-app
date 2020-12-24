@@ -85,7 +85,6 @@ class Weather_app:
             self.root, text=weather_data['dates'][index]))
 
         day_position = len(self.days_labels)
-        print(day_position)
 
         self.days_labels[-1].grid(row=5,
                                   column=day_position, columnspan=1, padx=10)
@@ -154,8 +153,10 @@ class Weather_app:
             dates.append(date)
             temperatures.append(temperature)
             # used for exploring data
+            '''
             print(date, '.'*int(temperature//1), temperature)
             print(date.strftime('%H'))
+            '''
 
         ''' saving whole dataset from openweather to json file for exploring
         with open('weather.json', 'w') as file:
