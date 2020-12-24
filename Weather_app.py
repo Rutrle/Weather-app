@@ -30,7 +30,7 @@ class Weather_app:
         city_label = tkinter.Label(self.root, text='City:')
         city_label.grid(row=2, column=0, columnspan=1, pady=20)
 
-        options = ['Praha', 'Brno', 'Kvilda']
+        options = ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
 
         self.place_selection = tkinter.StringVar()
         self.place_selection.set(options[0])
@@ -136,11 +136,10 @@ class Weather_app:
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
         token = '3826180b6619b9e8655cd67a2fa30f52'
         url = 'http://api.openweathermap.org/data/2.5/forecast'
-        city = 'praha'
 
         parametry = {
             'APIKEY': token,
-            'q': city,
+            'q': place,
             'units': 'metric'
         }
 
@@ -156,10 +155,9 @@ class Weather_app:
 
             dates.append(date)
             temperatures.append(temperature)
-            '''used for exploring data
+            # used for exploring data
             print(date, '.'*int(temperature//1), temperature)
             print(date.strftime('%H'))
-            '''
 
         ''' saving whole dataset from openweather to json file for exploring
         with open('weather.json', 'w') as file:
@@ -199,7 +197,9 @@ class Weather_app:
     def get_in_pocasi_data(self, place):
         '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
         urls = {'Praha': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/praha/praha-324',
-                'Kvilda': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihocesky/kvilda-4588/'}
+                'Kvilda': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihocesky/kvilda-4588/',
+                'Brno': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihomoravsky/brno-25/',
+                'Nová Paka': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/kralovehradecky/nova-paka-271/'}
         url = urls[place]
         api_request = requests.get(url)
         soup = BeautifulSoup(api_request.content, 'html.parser')

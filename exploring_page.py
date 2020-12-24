@@ -14,3 +14,7 @@ print(results.text)
 actual_temp = soup.find(class_='alfa mb-1')
 
 print(actual_temp.text)
+
+
+
+
