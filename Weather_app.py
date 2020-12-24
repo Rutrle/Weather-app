@@ -1,11 +1,13 @@
 import tkinter
 import datetime
-from PIL import ImageTk, Image
 import requests
 import json
 from bs4 import BeautifulSoup
 import re
 from collections import defaultdict
+from pandas import DataFrame
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class Weather_app:
@@ -23,7 +25,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('700x300')
+        self.root.geometry('720x570')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -66,6 +68,8 @@ class Weather_app:
 
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
+
+        self.plot_temperatures(weather_data)
 
         self.days_labels = []
         self.open_temperatures = {}
@@ -128,6 +132,31 @@ class Weather_app:
         while len(vector) < final_length:
             vector.append('NA')
         return vector
+
+    def plot_temperatures(self, weather_data):
+        num_temperatures = []
+        for temperature in weather_data['temperatures_in_pocasi']:
+            print(temperature)
+            print(re.findall(
+                r"[-+]?\d*\.\d+|\d+", temperature))
+
+            num_temperatures.append(float(re.findall(
+                r"[-+]?\d*\.\d+|\d+", temperature)[0]))
+
+        data1 = {'Date': weather_data['dates'],
+                 # teploty nejsou čísla
+                 'In Počasí': num_temperatures
+                 }
+        df1 = DataFrame(data1, columns=['Date', 'In Počasí'])
+
+        figure1 = plt.Figure(figsize=(6, 3.9), dpi=100)
+        ax1 = figure1.add_subplot(111)
+        bar1 = FigureCanvasTkAgg(figure1, self.root)
+        bar1.get_tk_widget().grid(row=8, column=0, columnspan=10)
+        df1 = df1[['Date', 'In Počasí']
+                  ].groupby('Date').sum()
+        df1.plot(kind='line', legend=True, ax=ax1)
+        ax1.set_title('temperatures')
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
