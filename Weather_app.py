@@ -94,8 +94,6 @@ class Weather_app:
         weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
         weather_data['length'] = max_length
 
-        print(weather_data['dates'])
-
         return weather_data
 
     def fill_in_vector(self, vector, final_length):
@@ -149,7 +147,7 @@ class Weather_app:
 
     def prepare_openweather_data(self, temperatures, dates):
         '''clears and prepares data from opeweather api'''
-        prepared_dates, prepared_temperatures = [], []
+        max_day_temperatures, prepared_dates = [], []
 
         sorted_temperatures = defaultdict(list)
 
@@ -157,7 +155,6 @@ class Weather_app:
             sorted_temperatures[dates[i].strftime(
                 '%d. %m.')].append(temperatures[i])
 
-        max_day_temperatures = []
         for date in sorted_temperatures:
             max_day_temperatures.append(
                 str(max(sorted_temperatures[date])) + ' °C')
