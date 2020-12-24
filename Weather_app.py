@@ -5,6 +5,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import re
+from collections import defaultdict
 
 
 class Weather_app:
@@ -148,11 +149,25 @@ class Weather_app:
         '''clears and prepares data from opeweather api'''
         prepared_dates, prepared_temperatures = [], []
 
+        sorted_temperatures = defaultdict(list)
+
+        print(dates)
+
+        for i in range(len(dates)):
+            sorted_temperatures[dates[i].strftime(
+                '%d. %m.')].append(temperatures[i])
+        print(sorted_temperatures)
+
+        max_day_temperatures = []
+        for date in sorted_temperatures:
+            max_day_temperatures.append(max(sorted_temperatures[date]))
+
         for i in range(len(dates)):
             if dates[i].strftime('%H') == '16':
                 prepared_dates.append(dates[i].strftime('%d. %m.'))
                 prepared_temperatures.append(str(temperatures[i]) + ' °C')
                 print(dates[i])
+        print(max_day_temperatures)
 
         today_date = (datetime.date.today())
         if prepared_dates[0] != today_date.strftime('%d. %m.'):
