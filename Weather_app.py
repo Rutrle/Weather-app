@@ -38,10 +38,24 @@ class Weather_app:
         self.place_dropmenu.grid(
             row=2, column=1, columnspan=1, padx=10)
 
+        button_get_temperatures = tkinter.Button(self.root, text="get temperatures",
+                                                 command=lambda: self.show_temperatures())
+        button_get_temperatures.grid(
+            row=2, column=2, columnspan=1, padx=10, pady=10)
+
         openweather_label = tkinter.Label(self.root, text='Openweather')
         openweather_label.grid(row=6, column=0, columnspan=1)
         in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
         in_pocasi_label.grid(row=7, column=0, columnspan=1)
+
+        '''for later commit
+        button_exit = tkinter.Button(
+            self.root, text="Zavřít", command=self.root.destroy)
+        button_exit.grid(row=99, column=3, columnspan=1, padx=10, pady=10)
+        '''
+
+    def show_temperatures(self):
+        print('finding new temperatures')
 
     def fill_in_days(self):
         '''fill in informations for all days'''
@@ -68,7 +82,8 @@ class Weather_app:
         self.days_labels.append(tkinter.Label(
             self.root, text=weather_data['dates'][index]))
 
-        day_position = 1 + len(self.days_labels)
+        day_position =len(self.days_labels)
+        print(day_position)
 
         self.days_labels[-1].grid(row=5,
                                   column=day_position, columnspan=1, padx=10)
