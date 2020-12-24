@@ -23,7 +23,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('650x400')
+        self.root.geometry('700x300')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -49,11 +49,9 @@ class Weather_app:
         in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
         in_pocasi_label.grid(row=7, column=0, columnspan=1)
 
-        '''for later commit
         button_exit = tkinter.Button(
             self.root, text="Zavřít", command=self.root.destroy)
-        button_exit.grid(row=99, column=3, columnspan=1, padx=10, pady=10)
-        '''
+        button_exit.grid(row=99, column=8, columnspan=1, padx=10, pady=10)
 
     def show_temperatures(self):
         print(self.place_selection.get())
