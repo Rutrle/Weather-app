@@ -160,11 +160,13 @@ class Weather_app:
 
         max_day_temperatures = []
         for date in sorted_temperatures:
-            max_day_temperatures.append(max(sorted_temperatures[date]))
+            max_day_temperatures.append(
+                str(max(sorted_temperatures[date])) + ' °C')
+            prepared_dates.append(date)
 
         for i in range(len(dates)):
             if dates[i].strftime('%H') == '16':
-                prepared_dates.append(dates[i].strftime('%d. %m.'))
+                #prepared_dates.append(dates[i].strftime('%d. %m.'))
                 prepared_temperatures.append(str(temperatures[i]) + ' °C')
                 print(dates[i])
         print(max_day_temperatures)
@@ -172,9 +174,9 @@ class Weather_app:
         today_date = (datetime.date.today())
         if prepared_dates[0] != today_date.strftime('%d. %m.'):
             prepared_dates.insert(0, 'NA')
-            prepared_temperatures.insert(0, 'NA')
+            max_day_temperatures.insert(0, 'NA')
 
-        return prepared_temperatures, prepared_dates
+        return max_day_temperatures, prepared_dates
 
     def max_day_temp(self, temperatures, dates):
         openweather_dictionary = {}
