@@ -132,8 +132,10 @@ class Weather_app:
 
             dates.append(date)
             temperatures.append(temperature)
+            '''used for exploring data
             print(date, '.'*int(temperature//1), temperature)
             print(date.strftime('%H'))
+            '''
 
         ''' saving whole dataset from openweather to json file for exploring
         with open('weather.json', 'w') as file:
@@ -151,25 +153,15 @@ class Weather_app:
 
         sorted_temperatures = defaultdict(list)
 
-        print(dates)
-
         for i in range(len(dates)):
             sorted_temperatures[dates[i].strftime(
                 '%d. %m.')].append(temperatures[i])
-        print(sorted_temperatures)
 
         max_day_temperatures = []
         for date in sorted_temperatures:
             max_day_temperatures.append(
                 str(max(sorted_temperatures[date])) + ' °C')
             prepared_dates.append(date)
-
-        for i in range(len(dates)):
-            if dates[i].strftime('%H') == '16':
-                #prepared_dates.append(dates[i].strftime('%d. %m.'))
-                prepared_temperatures.append(str(temperatures[i]) + ' °C')
-                print(dates[i])
-        print(max_day_temperatures)
 
         today_date = (datetime.date.today())
         if prepared_dates[0] != today_date.strftime('%d. %m.'):
