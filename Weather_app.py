@@ -148,6 +148,7 @@ class Weather_app:
                  'In Počasí': num_temperatures
                  }
         df1 = DataFrame(data1, columns=['Date', 'In Počasí'])
+        plt.style.use('seaborn')
 
         figure1 = plt.Figure(figsize=(6, 3.9), dpi=100)
         ax1 = figure1.add_subplot(111)
@@ -155,6 +156,7 @@ class Weather_app:
         bar1.get_tk_widget().grid(row=8, column=0, columnspan=10)
         df1 = df1[['Date', 'In Počasí']
                   ].groupby('Date').sum()
+
         df1.plot(kind='line', legend=True, ax=ax1)
         ax1.set_title('temperatures')
 
