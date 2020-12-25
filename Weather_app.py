@@ -134,7 +134,8 @@ class Weather_app:
         return vector
 
     def plot_temperatures(self, weather_data):
-        num_temperatures = []
+        num_temperatures, open_temperatures = [], []
+
         for temperature in weather_data['temperatures_in_pocasi']:
             print(temperature)
             print(re.findall(
@@ -143,22 +144,26 @@ class Weather_app:
             num_temperatures.append(float(re.findall(
                 r"[-+]?\d*\.\d+|\d+", temperature)[0]))
 
-        data1 = {'Date': weather_data['dates'],
-                 # teploty nejsou čísla
-                 'In Počasí': num_temperatures
-                 }
-        df1 = DataFrame(data1, columns=['Date', 'In Počasí'])
+        for i in range(len(weather_data['temperatures_openweather'])):
+            print(re.findall(
+                r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i]))
+
+            if weather_data['temperatures_openweather'][i] != 'NA':
+                open_temperatures.append(float(re.findall(
+                    r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i])[0]))
+
+        data = {'Date': weather_data['dates'],
+                'In Počasí': num_temperatures
+                }
+
+        figure = plt.Figure(figsize=(6, 3.9), dpi=100)
         plt.style.use('seaborn')
+        ax2 = figure.add_subplot(111)
+        line2 = FigureCanvasTkAgg(figure, self.root)
+        line2.get_tk_widget().grid(row=8, column=0, columnspan=10)
 
-        figure1 = plt.Figure(figsize=(6, 3.9), dpi=100)
-        ax1 = figure1.add_subplot(111)
-        bar1 = FigureCanvasTkAgg(figure1, self.root)
-        bar1.get_tk_widget().grid(row=8, column=0, columnspan=10)
-        df1 = df1[['Date', 'In Počasí']
-                  ].groupby('Date').sum()
-
-        df1.plot(kind='line', legend=True, ax=ax1)
-        ax1.set_title('temperatures')
+        ax2.plot(data['Date'], data['In Počasí'])
+        #ax2.plot(data2['Year'], data2['my_var'])
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
