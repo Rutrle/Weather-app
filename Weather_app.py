@@ -134,7 +134,8 @@ class Weather_app:
         return vector
 
     def plot_temperatures(self, weather_data):
-        num_temperatures, open_temperatures = [], []
+        num_temperatures, open_temperatures, date_open = [], [], []
+        print('plot')
 
         for temperature in weather_data['temperatures_in_pocasi']:
             print(temperature)
@@ -151,19 +152,25 @@ class Weather_app:
             if weather_data['temperatures_openweather'][i] != 'NA':
                 open_temperatures.append(float(re.findall(
                     r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i])[0]))
+                date_open.append(weather_data['dates'][i])
 
         data = {'Date': weather_data['dates'],
                 'In Počasí': num_temperatures
                 }
+        data_open = {'Open Date': date_open,
+                     'Open Počasí': open_temperatures
+                     }
+        print(open_temperatures)
 
         figure = plt.Figure(figsize=(6, 3.9), dpi=100)
         plt.style.use('seaborn')
         ax2 = figure.add_subplot(111)
+
         line2 = FigureCanvasTkAgg(figure, self.root)
         line2.get_tk_widget().grid(row=8, column=0, columnspan=10)
 
         ax2.plot(data['Date'], data['In Počasí'])
-        #ax2.plot(data2['Year'], data2['my_var'])
+        ax2.plot(data_open['Open Date'], data_open['Open Počasí'])
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
