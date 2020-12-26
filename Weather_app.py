@@ -233,7 +233,7 @@ class Weather_app:
 
         for date in sorted_temperatures:
             max_day_temperatures.append(
-                str(max(sorted_temperatures[date])) + ' °C')
+                str(max(sorted_temperatures[date])))
             prepared_dates.append(date)
 
         today_date = (datetime.date.today())
@@ -261,7 +261,7 @@ class Weather_app:
         actual_temp = soup.find(class_='alfa mb-1')
         actual_temp = actual_temp.text
         actual_temp = re.findall(r"[-+]?\d*\.\d+|\d+", actual_temp)
-        temperatures.append(str(actual_temp[0]) + '°C')
+        temperatures.append(str(actual_temp[0]))
         dates.append(datetime.date.today().strftime('%d. %m.'))
 
         indexes = ['day'+str(i) for i in range(1, 8)]
@@ -269,6 +269,8 @@ class Weather_app:
             try:
                 results = soup.find(id=indexes[i])
                 results = results.find(class_="mt-1 strong")
+                print('in_pocasi')
+                print(results.text)
                 temperatures.append(results.text)
                 date = datetime.date.today() + datetime.timedelta(days=(i+1))
                 dates.append(date.strftime('%d. %m.'))
