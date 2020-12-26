@@ -146,6 +146,7 @@ class Weather_app:
     def plot_temperatures(self, weather_data):
         num_temperatures, open_temperatures, date_open = [], [], []
         print('plot')
+        '''
 
         for temperature in weather_data['temperatures_in_pocasi']:
             print(temperature)
@@ -154,6 +155,8 @@ class Weather_app:
 
             num_temperatures.append(float(re.findall(
                 r"[-+]?\d*\.\d+|\d+", temperature)[0]))
+        '''
+        '''        
 
         for i in range(len(weather_data['temperatures_openweather'])):
             print(re.findall(
@@ -165,7 +168,7 @@ class Weather_app:
                 date_open.append(weather_data['dates'][i])
 
         data = {'Date': weather_data['dates'],
-                'In Počasí': num_temperatures
+                'In Počasí': weather_data['temperatures_in_pocasi']
                 }
         data_open = {'Open Date': date_open,
                      'Open Počasí': open_temperatures
@@ -181,6 +184,7 @@ class Weather_app:
 
         ax2.plot(data['Date'], data['In Počasí'])
         ax2.plot(data_open['Open Date'], data_open['Open Počasí'])
+        '''
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
@@ -260,7 +264,7 @@ class Weather_app:
 
         actual_temp = soup.find(class_='alfa mb-1')
         actual_temp = actual_temp.text
-        actual_temp = re.findall(r"[-+]?\d*\.\d+|\d+", actual_temp)
+        actual_temp = re.findall("-* *\d*\d\.*\d*", actual_temp)
         temperatures.append(str(actual_temp[0]))
         dates.append(datetime.date.today().strftime('%d. %m.'))
 
@@ -271,7 +275,10 @@ class Weather_app:
                 results = results.find(class_="mt-1 strong")
                 print('in_pocasi')
                 print(results.text)
-                temperatures.append(results.text)
+                results = float(
+                    (re.findall("-* *\d*\d\.*\d*", results.text))[0])
+                print(results)
+                temperatures.append(results)
                 date = datetime.date.today() + datetime.timedelta(days=(i+1))
                 dates.append(date.strftime('%d. %m.'))
 
