@@ -18,7 +18,8 @@ class Weather_app:
 
         self.customize_frame()
         self.fill_in_basics()
-        self.fill_in_days()
+
+        self.show_temperatures()
 
         self.root.mainloop()
 
@@ -56,11 +57,14 @@ class Weather_app:
         button_exit.grid(row=99, column=8, columnspan=1, padx=10, pady=10)
 
     def show_temperatures(self):
+        '''show temperatures in tkinter window and graph'''
         print(self.place_selection.get())
-        self.fill_in_days()
 
-    def fill_in_days(self):
-        '''fill in informations for all days'''
+        weather_data = self.get_weather_data()
+        self.fill_in_days(weather_data)
+
+    def get_weather_data(self):
+        '''collects weather data from all sources and returns them in dictionary of lists'''
         temperatures_openweather, dates_openweather = self.get_data_openweather(
             self.place_selection.get())
         temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
@@ -68,6 +72,12 @@ class Weather_app:
 
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
+        print(weather_data)
+
+        return weather_data
+
+    def fill_in_days(self, weather_data):
+        '''fill in informations for all days'''
 
         self.plot_temperatures(weather_data)
 
