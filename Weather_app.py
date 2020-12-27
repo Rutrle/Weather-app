@@ -146,6 +146,7 @@ class Weather_app:
     def plot_temperatures(self, weather_data):
         num_temperatures, open_temperatures, date_open = [], [], []
         print('plot')
+        print(weather_data)
         '''
 
         for temperature in weather_data['temperatures_in_pocasi']:
@@ -156,15 +157,16 @@ class Weather_app:
             num_temperatures.append(float(re.findall(
                 r"[-+]?\d*\.\d+|\d+", temperature)[0]))
         '''
-        '''        
+        num_temperatures = weather_data['temperatures_in_pocasi']
 
         for i in range(len(weather_data['temperatures_openweather'])):
+            '''
             print(re.findall(
                 r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i]))
+            '''
 
             if weather_data['temperatures_openweather'][i] != 'NA':
-                open_temperatures.append(float(re.findall(
-                    r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i])[0]))
+                open_temperatures.append(weather_data['temperatures_openweather'][i])
                 date_open.append(weather_data['dates'][i])
 
         data = {'Date': weather_data['dates'],
@@ -184,7 +186,6 @@ class Weather_app:
 
         ax2.plot(data['Date'], data['In Počasí'])
         ax2.plot(data_open['Open Date'], data_open['Open Počasí'])
-        '''
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists'''
@@ -236,8 +237,7 @@ class Weather_app:
                 '%d. %m.')].append(temperatures[i])
 
         for date in sorted_temperatures:
-            max_day_temperatures.append(
-                str(max(sorted_temperatures[date])))
+            max_day_temperatures.append((max(sorted_temperatures[date])))
             prepared_dates.append(date)
 
         today_date = (datetime.date.today())
@@ -265,7 +265,7 @@ class Weather_app:
         actual_temp = soup.find(class_='alfa mb-1')
         actual_temp = actual_temp.text
         actual_temp = re.findall("-* *\d*\d\.*\d*", actual_temp)
-        temperatures.append(str(actual_temp[0]))
+        temperatures.append(float(actual_temp[0]))
         dates.append(datetime.date.today().strftime('%d. %m.'))
 
         indexes = ['day'+str(i) for i in range(1, 8)]
