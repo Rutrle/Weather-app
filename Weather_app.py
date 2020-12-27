@@ -179,14 +179,23 @@ class Weather_app:
                      }
 
         figure = plt.Figure(figsize=(6, 3.9), dpi=100)
-        plt.style.use('seaborn')
-        ax2 = figure.add_subplot(111)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
         line2.get_tk_widget().grid(row=8, column=0, columnspan=10)
 
-        ax2.plot(data['Date'], data['In Počasí'])
-        ax2.plot(data_open['Open Date'], data_open['Open Počasí'])
+        plt.style.use('ggplot')
+
+        ax2 = figure.add_subplot(111)
+
+        ax2.set_xlabel('Date')
+        ax2.set_ylabel('Temperature / °C')
+        ax2.set_title('Temperature forecast')
+
+        ax2.plot(data['Date'], data['In Počasí'],
+                 color='r', marker="o", label='In Počasí')
+        ax2.plot(data_open['Open Date'], data_open['Open Počasí'],
+                 color='g', marker="o", label='Open weather')
+        ax2.legend()
 
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists
