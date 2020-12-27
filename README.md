@@ -2,9 +2,9 @@
 
 Weather desktop comparing temperature forecast from multiple sites
 
-TO DO list:
-add https://www.yr.no/ site
-improve temperature graph
-refactoring
+##TO DO list:
+<p>add https://www.yr.no/ site</p>
+<p>improve temperature graph</p>
+<p>refactoring</p>
 
 
