@@ -76,7 +76,10 @@ class Weather_app:
         return weather_data
 
     def fill_in_days(self, weather_data):
-        '''fill in informations for all days'''
+        '''
+        fill in informations for all days
+        :param weather_data: dictionary of lists
+        '''
 
         self.plot_temperatures(weather_data)
 
@@ -115,6 +118,14 @@ class Weather_app:
             row=7, column=day_position, columnspan=1, padx=10)
 
     def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi):
+        '''
+        prepares weather data from different sources into one dictionary weather_data, which it returns
+        :param dates_openweather: list
+        :param temperatures_openweather: list
+        :param dates_in_pocasi: list
+        :param temperatures_in_pocasi: list
+
+        '''
         max_length = max(len(dates_in_pocasi), len(dates_openweather))
 
         temperatures_openweather = self.fill_in_vector(
@@ -143,6 +154,10 @@ class Weather_app:
         return vector
 
     def plot_temperatures(self, weather_data):
+        '''
+        plots temperature forecasts in tkinter window
+        :param weather_data: dictionary of lists
+        '''
         num_temperatures, open_temperatures, date_open = [], [], []
 
         num_temperatures = weather_data['temperatures_in_pocasi']
@@ -239,7 +254,10 @@ class Weather_app:
         return max_day_temperatures, prepared_dates
 
     def get_in_pocasi_data(self, place):
-        '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
+        '''
+        get weather forecast data for given place from in Počasí website and returns temperatures and dates lists
+        :param place: str
+        '''
         urls = {'Praha': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/praha/praha-324',
                 'Kvilda': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihocesky/kvilda-4588/',
                 'Brno': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihomoravsky/brno-25/',
