@@ -1,6 +1,8 @@
 # Weather-app
 
-Weather desktop comparing temperature forecast from multiple sites
+Weather desktop app comparing temperature forecast from multiple sites
+
+Work in progress
 
 ## TO DO list:
 <p>add https://www.yr.no/ site</p>
