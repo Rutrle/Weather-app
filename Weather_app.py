@@ -145,28 +145,14 @@ class Weather_app:
 
     def plot_temperatures(self, weather_data):
         num_temperatures, open_temperatures, date_open = [], [], []
-        print('plot')
-        print(weather_data)
-        '''
 
-        for temperature in weather_data['temperatures_in_pocasi']:
-            print(temperature)
-            print(re.findall(
-                r"[-+]?\d*\.\d+|\d+", temperature))
-
-            num_temperatures.append(float(re.findall(
-                r"[-+]?\d*\.\d+|\d+", temperature)[0]))
-        '''
         num_temperatures = weather_data['temperatures_in_pocasi']
 
         for i in range(len(weather_data['temperatures_openweather'])):
-            '''
-            print(re.findall(
-                r"[-+]?\d*\.\d+|\d+", weather_data['temperatures_openweather'][i]))
-            '''
 
             if weather_data['temperatures_openweather'][i] != 'NA':
-                open_temperatures.append(weather_data['temperatures_openweather'][i])
+                open_temperatures.append(
+                    weather_data['temperatures_openweather'][i])
                 date_open.append(weather_data['dates'][i])
 
         data = {'Date': weather_data['dates'],
@@ -175,7 +161,6 @@ class Weather_app:
         data_open = {'Open Date': date_open,
                      'Open Počasí': open_temperatures
                      }
-        print(open_temperatures)
 
         figure = plt.Figure(figsize=(6, 3.9), dpi=100)
         plt.style.use('seaborn')
@@ -188,7 +173,10 @@ class Weather_app:
         ax2.plot(data_open['Open Date'], data_open['Open Počasí'])
 
     def get_data_openweather(self, place):
-        '''get weather forecast data from openweather api and returns temperatures and dates lists'''
+        '''get weather forecast data from openweather api and returns temperatures and dates lists
+        :param place: str
+
+        '''
         token = '3826180b6619b9e8655cd67a2fa30f52'
         url = 'http://api.openweathermap.org/data/2.5/forecast'
 
@@ -227,7 +215,11 @@ class Weather_app:
         return temperatures, dates
 
     def prepare_openweather_data(self, temperatures, dates):
-        '''clears and prepares data from opeweather api'''
+        '''
+        clears and prepares data from opeweather api
+        :param temperatures: list
+        :param dates: list    
+        '''
         max_day_temperatures, prepared_dates = [], []
 
         sorted_temperatures = defaultdict(list)
@@ -246,9 +238,6 @@ class Weather_app:
             max_day_temperatures.insert(0, 'NA')
 
         return max_day_temperatures, prepared_dates
-
-    def max_day_temp(self, temperatures, dates):
-        openweather_dictionary = {}
 
     def get_in_pocasi_data(self, place):
         '''get weather forecast data from in Počasí website and returns temperatures and dates lists'''
@@ -273,11 +262,8 @@ class Weather_app:
             try:
                 results = soup.find(id=indexes[i])
                 results = results.find(class_="mt-1 strong")
-                print('in_pocasi')
-                print(results.text)
                 results = float(
                     (re.findall("-* *\d*\d\.*\d*", results.text))[0])
-                print(results)
                 temperatures.append(results)
                 date = datetime.date.today() + datetime.timedelta(days=(i+1))
                 dates.append(date.strftime('%d. %m.'))
