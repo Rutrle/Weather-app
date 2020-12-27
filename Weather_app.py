@@ -107,15 +107,17 @@ class Weather_app:
 
         date = weather_data['dates'][index]
 
-        self.open_temperatures[date] = tkinter.Label(
-            self.root, text=str(weather_data['temperatures_openweather'][index]))
+        self.open_temperatures[date] = tkinter.Label(self.root, text=(
+            str(weather_data['temperatures_openweather'][index]) + ' °C'))
         self.open_temperatures[date].grid(
             row=6, column=day_position, columnspan=1, padx=10)
 
         self.in_temperatures[date] = tkinter.Label(
-            self.root, text=str(weather_data['temperatures_in_pocasi'][index]))
+            self.root, text=(str(weather_data['temperatures_in_pocasi'][index]) + ' °C'))
         self.in_temperatures[date].grid(
             row=7, column=day_position, columnspan=1, padx=10)
+
+        print(len(self.in_temperatures))
 
     def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi):
         '''
@@ -232,7 +234,7 @@ class Weather_app:
         '''
         clears and prepares data from opeweather api
         :param temperatures: list
-        :param dates: list    
+        :param dates: list
         '''
         max_day_temperatures, prepared_dates = [], []
 
