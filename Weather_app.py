@@ -52,7 +52,7 @@ class Weather_app:
         in_pocasi_label.grid(row=7, column=0, columnspan=1)
 
         Yr_label = tkinter.Label(self.root, text='Yr.no')
-        Yr_label.grid(row=7, column=0, columnspan=1)
+        Yr_label.grid(row=8, column=0, columnspan=1)
 
         button_exit = tkinter.Button(
             self.root, text="Zavřít", command=self.root.destroy)
@@ -323,7 +323,15 @@ class Weather_app:
         '''get weather forecast data from yr weather api and returns temperatures and dates lists
         :param place: str
         '''
-        url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=50&lon=20"
+        ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
+        latslongs = {
+            'Praha': {'lat': 50.5, 'long': 14.25},
+            'Brno': {'lat': 49.20, 'long': 16.60},
+            'Kvilda': {'lat': 49.02, 'long': 13.58},
+            'Nová Paka': {'lat': 50.49, 'long': 15.52}
+        }
+
+        url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={latslongs[place]['lat']}&lon={latslongs[place]['long']}"
         header = {
             "Accept": 'application/json',
             'User-Agent': 'weather app tryout https://github.com/Rutrle/Weather-app'
@@ -343,7 +351,6 @@ class Weather_app:
                 weather_log['data']['instant']['details']['air_temperature'])
 
         temperatures, dates = self.prepare_api_data(temperatures, dates)
-        print('yr', temperatures, dates)
 
         return temperatures, dates
 
@@ -356,6 +363,7 @@ class Weather_app:
                 'Kvilda': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihocesky/kvilda-4588/',
                 'Brno': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/jihomoravsky/brno-25/',
                 'Nová Paka': 'https://www.in-pocasi.cz/predpoved-pocasi/cz/kralovehradecky/nova-paka-271/'}
+
         url = urls[place]
         api_request = requests.get(url)
         soup = BeautifulSoup(api_request.content, 'html.parser')
