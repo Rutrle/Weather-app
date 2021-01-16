@@ -68,6 +68,7 @@ class Weather_app:
             self.place_selection.get())
         temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
             self.place_selection.get())
+        self.get_data_yr(self.place_selection.get())
 
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
@@ -200,18 +201,18 @@ class Weather_app:
     def get_data_openweather(self, place):
         '''get weather forecast data from openweather api and returns temperatures and dates lists
         :param place: str
-
         '''
+
         token = '3826180b6619b9e8655cd67a2fa30f52'
         url = 'http://api.openweathermap.org/data/2.5/forecast'
 
-        parametry = {
+        parameters = {
             'APIKEY': token,
             'q': place,
             'units': 'metric'
         }
 
-        api_request = requests.get(url, params=parametry)
+        api_request = requests.get(url, params=parameters)
         api_request = api_request.json()
 
         dates, temperatures = [], []
@@ -263,6 +264,34 @@ class Weather_app:
             max_day_temperatures.insert(0, 'NA')
 
         return max_day_temperatures, prepared_dates
+
+    def get_data_yr(self, place):
+        '''get weather forecast data from yr weather api and returns temperatures and dates lists
+        :param place: str
+        '''
+        url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=50&lon=20"
+        header = {
+            "Accept": 'application/json',
+            'User-Agent': 'weather app tryout https://github.com/Rutrle/Weather-app'
+        }
+
+        api_request = requests.get(url, headers=header)
+        api_request = api_request.json()
+        relevant_data = api_request['properties']['timeseries']
+
+        temperatures, dates = [], []
+
+        for weather_log in relevant_data:
+            date = datetime.datetime.strptime(
+                weather_log['time'], '%Y-%m-%dT%H:%M:%SZ')
+            dates.append(date)
+            temperatures.append(
+                weather_log['data']['instant']['details']['air_temperature'])
+
+        print(temperatures, dates)
+
+        return temperatures, dates
+    
 
     def get_in_pocasi_data(self, place):
         '''

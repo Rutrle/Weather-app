@@ -1,12 +1,11 @@
 import requests
 import json
+import datetime
 
 url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=50&lon=20"
 header = {
     "Accept": 'application/json',
     'User-Agent': 'weather app tryout https://github.com/Rutrle/Weather-app'
-
-
 }
 
 
@@ -26,3 +25,7 @@ with open('cleaned_data.json', 'w') as f:
 for weather_log in relevant_data:
     print(weather_log['time'])
     print(weather_log['data']['instant']['details']['air_temperature'])
+
+
+
+'2021-01-17T03:00:00Z'
