@@ -113,22 +113,39 @@ class Weather_app:
 
         date = weather_data['dates'][index]
 
-        self.open_temperatures[date] = tkinter.Label(self.root, text=(
-            str(weather_data['temperatures_openweather'][index]) + ' °C'))
+        open_temperature = self.add_degrees_symbol(
+            str(weather_data['temperatures_openweather'][index]))
+        in_temperature = self.add_degrees_symbol(
+            str(weather_data['temperatures_in_pocasi'][index]))
+        yr_temperature = self.add_degrees_symbol(
+            str(weather_data['temperatures_yr'][index]))
+
+        self.open_temperatures[date] = tkinter.Label(
+            self.root, text=(open_temperature))
         self.open_temperatures[date].grid(
             row=6, column=day_position, columnspan=1, padx=10)
 
         self.in_temperatures[date] = tkinter.Label(
-            self.root, text=(str(weather_data['temperatures_in_pocasi'][index]) + ' °C'))
+            self.root, text=(in_temperature))
         self.in_temperatures[date].grid(
             row=7, column=day_position, columnspan=1, padx=10)
 
         self.yr_temperatures[date] = tkinter.Label(
-            self.root, text=(str(weather_data['temperatures_yr'][index]) + ' °C'))
+            self.root, text=(yr_temperature))
         self.yr_temperatures[date].grid(
             row=8, column=day_position, columnspan=1, padx=10)
 
         print(len(self.in_temperatures))
+
+    def add_degrees_symbol(self, temperature):
+        '''
+        adds degrees symbol to temperature in case the temperature is a valid number
+        :param temperature: string
+                                temperature to which units should be added
+        '''
+        if temperature != 'NA':
+            temperature = temperature + '°C'
+        return temperature
 
     def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr):
         '''
