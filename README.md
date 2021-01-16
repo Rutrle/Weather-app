@@ -21,11 +21,11 @@ Work in progress
 
 ## Contents:
 
-<h6>Weather_app</h6>
-<li><p>Main code of this app, try running it!</p></li>
-<h6>requirements</h6>
-<p>all packages you need to run this app</p>
-<h6>README</h6>
-<p>you are reading this now</p>
-<h6>tryouts</h6>
-<p>folder containing various experiments and tryouts that I have written during making of this app</p>
+<h7>Weather_app</h7>
+<ul><li>Main code of this app, try running it!</li></ul>
+<h7>requirements</h7>
+<ul><li>all packages you need to run this app</li></ul>
+<h7>README</h7>
+<ul><li>you are reading this now</li></ul>
+<h7>tryouts</h7>
+<ul><li>folder containing various experiments and tryouts that I have written during making of this app</li></ul>
