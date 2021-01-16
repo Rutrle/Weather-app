@@ -88,6 +88,7 @@ class Weather_app:
         self.days_labels = []
         self.open_temperatures = {}
         self.in_temperatures = {}
+        self.yr_temperatures = {}
         for i in range(weather_data['length']):
             self.fill_in_day(weather_data, i)
 
@@ -118,6 +119,11 @@ class Weather_app:
             self.root, text=(str(weather_data['temperatures_in_pocasi'][index]) + ' °C'))
         self.in_temperatures[date].grid(
             row=7, column=day_position, columnspan=1, padx=10)
+
+        self.yr_temperatures[date] = tkinter.Label(
+            self.root, text=(str(weather_data['temperatures_yr'][index]) + ' °C'))
+        self.yr_temperatures[date].grid(
+            row=8, column=day_position, columnspan=1, padx=10)
 
         print(len(self.in_temperatures))
 
@@ -175,7 +181,7 @@ class Weather_app:
         plots temperature forecasts in tkinter window
         :param weather_data: dictionary of lists
         '''
-        num_temperatures, open_temperatures, date_open = [], [], []
+        num_temperatures, open_temperatures, in_pocasi_temperatures, date_open, date_in_pocasi = [], [], [], [], []
 
         num_temperatures = weather_data['temperatures_in_pocasi']
 
@@ -186,17 +192,27 @@ class Weather_app:
                     weather_data['temperatures_openweather'][i])
                 date_open.append(weather_data['dates'][i])
 
-        data = {'Date': weather_data['dates'],
-                'In Počasí': weather_data['temperatures_in_pocasi']
+        for i in range(len(weather_data['temperatures_in_pocasi'])):
+
+            if weather_data['temperatures_in_pocasi'][i] != 'NA':
+                in_pocasi_temperatures.append(
+                    weather_data['temperatures_in_pocasi'][i])
+                date_in_pocasi.append(weather_data['dates'][i])
+
+        data = {'Date': date_in_pocasi,
+                'In Počasí': in_pocasi_temperatures
                 }
         data_open = {'Open Date': date_open,
                      'Open Počasí': open_temperatures
                      }
+        data_yr = {'Yr_date': weather_data['dates'],
+                   'Yr_temperature': weather_data['temperatures_yr']
+                   }
 
         figure = plt.Figure(figsize=(6, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
-        line2.get_tk_widget().grid(row=8, column=0, columnspan=10)
+        line2.get_tk_widget().grid(row=9, column=0, columnspan=10)
 
         plt.style.use('ggplot')
 
@@ -210,6 +226,10 @@ class Weather_app:
                  color='r', marker="o", label='In Počasí')
         ax2.plot(data_open['Open Date'], data_open['Open Počasí'],
                  color='g', marker="o", label='Open weather')
+
+        ax2.plot(data_yr['Yr_date'], data_yr['Yr_temperature'],
+                 color='b', marker="o", label='yr.no')
+
         ax2.legend()
 
     def get_data_openweather(self, place):
