@@ -25,7 +25,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('720x570')
+        self.root.geometry('920x570')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -50,6 +50,9 @@ class Weather_app:
         openweather_label.grid(row=6, column=0, columnspan=1)
         in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
         in_pocasi_label.grid(row=7, column=0, columnspan=1)
+
+        Yr_label = tkinter.Label(self.root, text='Yr.no')
+        Yr_label.grid(row=7, column=0, columnspan=1)
 
         button_exit = tkinter.Button(
             self.root, text="Zavřít", command=self.root.destroy)
@@ -209,10 +212,10 @@ class Weather_app:
                    'Yr_temperature': weather_data['temperatures_yr']
                    }
 
-        figure = plt.Figure(figsize=(6, 3.9), dpi=100)
+        figure = plt.Figure(figsize=(8, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
-        line2.get_tk_widget().grid(row=9, column=0, columnspan=10)
+        line2.get_tk_widget().grid(row=9, column=0, columnspan=14)
 
         plt.style.use('ggplot')
 
@@ -228,7 +231,7 @@ class Weather_app:
                  color='g', marker="o", label='Open weather')
 
         ax2.plot(data_yr['Yr_date'], data_yr['Yr_temperature'],
-                 color='b', marker="o", label='yr.no')
+                 color='b', marker="o", label='Yr.no')
 
         ax2.legend()
 
