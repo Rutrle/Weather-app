@@ -68,10 +68,11 @@ class Weather_app:
             self.place_selection.get())
         temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
             self.place_selection.get())
-        self.get_data_yr(self.place_selection.get())
+        temperatures_yr, dates_yr = self.get_yr_data(
+            self.place_selection.get())
 
         weather_data = self.prepare_weather_data(
-            dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi)
+            dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr)
         print(weather_data)
 
         return weather_data
@@ -120,7 +121,7 @@ class Weather_app:
 
         print(len(self.in_temperatures))
 
-    def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi):
+    def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr):
         '''
         prepares weather data from different sources into one dictionary weather_data, which it returns
         :param dates_openweather: list
@@ -129,7 +130,17 @@ class Weather_app:
         :param temperatures_in_pocasi: list
 
         '''
-        max_length = max(len(dates_in_pocasi), len(dates_openweather))
+        weather_data = {}
+
+        max_length = max(len(dates_in_pocasi), len(
+            dates_openweather), len(dates_yr))
+
+        if max_length == len(dates_yr):
+            weather_data['dates'] = dates_yr
+        elif max_length == len(dates_in_pocasi):
+            weather_data['dates'] = dates_in_pocasi
+        else:
+            weather_data['dates'] = dates_in_pocasi
 
         temperatures_openweather = self.fill_in_vector(
             temperatures_openweather, max_length)
@@ -138,10 +149,13 @@ class Weather_app:
             temperatures_in_pocasi, max_length)
         dates_in_pocasi = self.fill_in_vector(dates_in_pocasi, max_length)
 
-        weather_data = {}
-        weather_data['dates'] = dates_in_pocasi
+        temperatures_yr = self.fill_in_vector(
+            temperatures_yr, max_length)
+        dates_yr = self.fill_in_vector(dates_yr, max_length)
+
         weather_data['temperatures_openweather'] = temperatures_openweather
         weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
+        weather_data['temperatures_yr'] = temperatures_yr
         weather_data['length'] = max_length
 
         return weather_data
@@ -235,14 +249,14 @@ class Weather_app:
         json.dump(api_request, file, indent=4)
         '''
 
-        temperatures, dates = self.prepare_openweather_data(
+        temperatures, dates = self.prepare_api_data(
             temperatures, dates)
 
         return temperatures, dates
 
-    def prepare_openweather_data(self, temperatures, dates):
+    def prepare_api_data(self, temperatures, dates):
         '''
-        clears and prepares data from opeweather api
+        clears and prepares data from  api which has multiple temperatures per single day
         :param temperatures: list
         :param dates: list
         '''
@@ -265,7 +279,7 @@ class Weather_app:
 
         return max_day_temperatures, prepared_dates
 
-    def get_data_yr(self, place):
+    def get_yr_data(self, place):
         '''get weather forecast data from yr weather api and returns temperatures and dates lists
         :param place: str
         '''
@@ -288,10 +302,10 @@ class Weather_app:
             temperatures.append(
                 weather_log['data']['instant']['details']['air_temperature'])
 
-        print(temperatures, dates)
+        temperatures, dates = self.prepare_api_data(temperatures, dates)
+        print('yr', temperatures, dates)
 
         return temperatures, dates
-    
 
     def get_in_pocasi_data(self, place):
         '''
