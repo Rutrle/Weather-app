@@ -32,19 +32,30 @@ class Weather_app:
         city_label = tkinter.Label(self.root, text='City:')
         city_label.grid(row=2, column=0, columnspan=1, pady=20)
 
-        options = ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
+        place_options = ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
 
         self.place_selection = tkinter.StringVar()
-        self.place_selection.set(options[0])
+        self.place_selection.set(place_options[0])
         self.place_dropmenu = tkinter.OptionMenu(
-            self.root, self.place_selection, *options)
+            self.root, self.place_selection, *place_options)
         self.place_dropmenu.grid(
-            row=2, column=1, columnspan=2, padx=10)
+            row=2, column=1, columnspan=2)
+
+        units_label = tkinter.Label(self.root, text='Units:')
+        units_label.grid(row=2, column=3, columnspan=1, pady=20)
+
+        degrees_options = ['Celsius', 'Fahrenheit', 'Kelvin']
+        self.degrees_selection = tkinter.StringVar()
+        self.degrees_selection.set(degrees_options[0])
+        self.degrees_dropmenu = tkinter.OptionMenu(
+            self.root, self.degrees_selection, *degrees_options)
+        self.degrees_dropmenu.grid(
+            row=2, column=4, columnspan=2)
 
         button_get_temperatures = tkinter.Button(self.root, text="get temperatures",
                                                  command=lambda: self.show_temperatures())
         button_get_temperatures.grid(
-            row=2, column=3, columnspan=2, padx=10, pady=10)
+            row=2, column=6, columnspan=2, padx=10, pady=10)
 
         openweather_label = tkinter.Label(self.root, text='Openweather')
         openweather_label.grid(row=6, column=0, columnspan=1)
@@ -121,19 +132,19 @@ class Weather_app:
             str(weather_data['temperatures_yr'][index]))
 
         self.open_temperatures[date] = tkinter.Label(
-            self.root, text=(open_temperature), width=6)
+            self.root, text=(open_temperature), width=5)
         self.open_temperatures[date].grid(
-            row=6, column=day_position, columnspan=1, padx=10)
+            row=6, column=day_position, columnspan=1)
 
         self.in_temperatures[date] = tkinter.Label(
-            self.root, text=(in_temperature), width=6)
+            self.root, text=(in_temperature), width=5)
         self.in_temperatures[date].grid(
-            row=7, column=day_position, columnspan=1, padx=10)
+            row=7, column=day_position, columnspan=1)
 
         self.yr_temperatures[date] = tkinter.Label(
-            self.root, text=(yr_temperature), width=6)
+            self.root, text=(yr_temperature), width=5)
         self.yr_temperatures[date].grid(
-            row=8, column=day_position, columnspan=1, padx=10)
+            row=8, column=day_position, columnspan=1)
 
     def add_degrees_symbol(self, temperature):
         '''
