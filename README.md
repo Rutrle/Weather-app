@@ -22,7 +22,7 @@ Work in progress
 ## Contents:
 
 <h7>Weather_app</h7>
-<ul><li>Main code of this app, try running it!</li></ul>
+<ul><li>Main code of this app, try it out!</li></ul>
 <h7>requirements</h7>
 <ul><li>all packages you need to run this app</li></ul>
 <h7>README</h7>
