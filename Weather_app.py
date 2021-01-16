@@ -25,7 +25,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('920x570')
+        self.root.geometry('920x600')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -39,12 +39,12 @@ class Weather_app:
         self.place_dropmenu = tkinter.OptionMenu(
             self.root, self.place_selection, *options)
         self.place_dropmenu.grid(
-            row=2, column=1, columnspan=1, padx=10)
+            row=2, column=1, columnspan=2, padx=10)
 
         button_get_temperatures = tkinter.Button(self.root, text="get temperatures",
                                                  command=lambda: self.show_temperatures())
         button_get_temperatures.grid(
-            row=2, column=2, columnspan=1, padx=10, pady=10)
+            row=2, column=3, columnspan=2, padx=10, pady=10)
 
         openweather_label = tkinter.Label(self.root, text='Openweather')
         openweather_label.grid(row=6, column=0, columnspan=1)
@@ -121,21 +121,19 @@ class Weather_app:
             str(weather_data['temperatures_yr'][index]))
 
         self.open_temperatures[date] = tkinter.Label(
-            self.root, text=(open_temperature))
+            self.root, text=(open_temperature), width=6)
         self.open_temperatures[date].grid(
             row=6, column=day_position, columnspan=1, padx=10)
 
         self.in_temperatures[date] = tkinter.Label(
-            self.root, text=(in_temperature))
+            self.root, text=(in_temperature), width=6)
         self.in_temperatures[date].grid(
             row=7, column=day_position, columnspan=1, padx=10)
 
         self.yr_temperatures[date] = tkinter.Label(
-            self.root, text=(yr_temperature))
+            self.root, text=(yr_temperature), width=6)
         self.yr_temperatures[date].grid(
             row=8, column=day_position, columnspan=1, padx=10)
-
-        print(len(self.in_temperatures))
 
     def add_degrees_symbol(self, temperature):
         '''
@@ -154,7 +152,8 @@ class Weather_app:
         :param temperatures_openweather: list
         :param dates_in_pocasi: list
         :param temperatures_in_pocasi: list
-
+        :param temperatures_yr: list
+        :param dates_yr: list
         '''
         weather_data = {}
 
@@ -232,7 +231,7 @@ class Weather_app:
         figure = plt.Figure(figsize=(8, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
-        line2.get_tk_widget().grid(row=9, column=0, columnspan=14)
+        line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10)
 
         plt.style.use('ggplot')
 
@@ -253,7 +252,8 @@ class Weather_app:
         ax2.legend()
 
     def get_data_openweather(self, place):
-        '''get weather forecast data from openweather api and returns temperatures and dates lists
+        '''
+        get weather forecast data from openweather api and returns temperatures and dates lists
         :param place: str
         '''
 
@@ -320,7 +320,8 @@ class Weather_app:
         return max_day_temperatures, prepared_dates
 
     def get_yr_data(self, place):
-        '''get weather forecast data from yr weather api and returns temperatures and dates lists
+        '''
+        get weather forecast data from yr weather api from selected place and returns temperatures and dates lists
         :param place: str
         '''
         ['Praha', 'Brno', 'Kvilda', 'Nová Paka']

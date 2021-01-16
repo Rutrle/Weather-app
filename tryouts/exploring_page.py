@@ -16,19 +16,5 @@ actual_temp = soup.find(class_='alfa mb-1')
 print(actual_temp.text)
 
 
-'''
-    def prepare_yr_data(self, temperatures, dates):
-        max_day_temperatures, prepared_dates = [], []
 
-        sorted_temperatures = defaultdict(list)
-
-        for i in range(len(dates)):
-            sorted_temperatures[dates[i].strftime(
-                '%d. %m.')].append(temperatures[i])
-
-        for date in sorted_temperatures:
-            pass
-
-        return max_day_temperatures, prepared_dates
-'''
 
