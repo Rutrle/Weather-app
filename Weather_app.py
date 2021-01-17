@@ -25,7 +25,7 @@ class Weather_app:
     def customize_frame(self):
         '''customizes basic frame for weather app'''
         self.root.title('Weather forecast comparison')
-        self.root.geometry('920x600')
+        self.root.geometry('820x600')
 
     def fill_in_basics(self):
         ''' fills in tkinter window with basic info'''
@@ -58,7 +58,7 @@ class Weather_app:
             row=2, column=6, columnspan=2, padx=10, pady=10)
 
         openweather_label = tkinter.Label(self.root, text='Openweather')
-        openweather_label.grid(row=6, column=0, columnspan=1)
+        openweather_label.grid(row=6, column=0, columnspan=1, padx=20)
         in_pocasi_label = tkinter.Label(self.root, text='In Počasí')
         in_pocasi_label.grid(row=7, column=0, columnspan=1)
 
@@ -71,9 +71,15 @@ class Weather_app:
 
     def show_temperatures(self):
         '''show temperatures in tkinter window and graph'''
-        print(self.place_selection.get())
 
         weather_data = self.get_weather_data()
+
+        weather_data = self.unit_conversion(weather_data)
+
+        self.plot_temperatures(weather_data)
+        print(weather_data['length'])
+        weather_data = self.fill_in_vectors(weather_data)
+
         self.fill_in_days(weather_data)
 
     def get_weather_data(self):
@@ -96,9 +102,6 @@ class Weather_app:
         fill in informations for all days
         :param weather_data: dictionary of lists
         '''
-
-        self.plot_temperatures(weather_data)
-
         self.days_labels = []
         self.open_temperatures = {}
         self.in_temperatures = {}
@@ -148,12 +151,17 @@ class Weather_app:
 
     def add_degrees_symbol(self, temperature):
         '''
-        adds degrees symbol to temperature in case the temperature is a valid number
+        adds degrees symbol, depending on selected units, to temperature in case the temperature is a valid number
         :param temperature: string
                                 temperature to which units should be added
         '''
         if temperature != 'NA':
-            temperature = temperature + '°C'
+            if self.degrees_selection.get() == 'Celsius':
+                temperature = temperature + ' °C'
+            elif self.degrees_selection.get() == 'Fahrenheit':
+                temperature = temperature + ' °F'
+            elif self.degrees_selection.get() == 'Kelvin':
+                temperature = temperature + ' K'
         return temperature
 
     def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr):
@@ -170,6 +178,7 @@ class Weather_app:
 
         max_length = max(len(dates_in_pocasi), len(
             dates_openweather), len(dates_yr))
+        print(max_length)
 
         if max_length == len(dates_yr):
             weather_data['dates'] = dates_yr
@@ -178,21 +187,36 @@ class Weather_app:
         else:
             weather_data['dates'] = dates_in_pocasi
 
-        temperatures_openweather = self.fill_in_vector(
-            temperatures_openweather, max_length)
-        dates_openweather = self.fill_in_vector(dates_openweather, max_length)
-        temperatures_in_pocasi = self.fill_in_vector(
-            temperatures_in_pocasi, max_length)
-        dates_in_pocasi = self.fill_in_vector(dates_in_pocasi, max_length)
-
-        temperatures_yr = self.fill_in_vector(
-            temperatures_yr, max_length)
-        dates_yr = self.fill_in_vector(dates_yr, max_length)
-
         weather_data['temperatures_openweather'] = temperatures_openweather
         weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
         weather_data['temperatures_yr'] = temperatures_yr
         weather_data['length'] = max_length
+
+        weather_data['dates_openweather'] = dates_openweather
+        weather_data['dates_in_pocasi'] = dates_in_pocasi
+        weather_data['dates_yr'] = dates_yr
+
+        return weather_data
+
+    def fill_in_vectors(self, weather_data):
+        '''
+        '''
+
+        weather_data['temperatures_openweather'] = self.fill_in_vector(
+            weather_data['temperatures_openweather'], weather_data['length'])
+
+        weather_data['dates_openweather'] = self.fill_in_vector(
+            weather_data['dates_openweather'], weather_data['length'])
+
+        weather_data['temperatures_in_pocasi'] = self.fill_in_vector(
+            weather_data['temperatures_in_pocasi'], weather_data['length'])
+        weather_data['dates_in_pocasi'] = self.fill_in_vector(
+            weather_data['dates_in_pocasi'], weather_data['length'])
+
+        weather_data['temperatures_yr'] = self.fill_in_vector(
+            weather_data['temperatures_yr'], weather_data['length'])
+        weather_data['dates_yr'] = self.fill_in_vector(
+            weather_data['dates_yr'], weather_data['length'])
 
         return weather_data
 
@@ -239,7 +263,13 @@ class Weather_app:
                    'Yr_temperature': weather_data['temperatures_yr']
                    }
 
-        figure = plt.Figure(figsize=(8, 3.9), dpi=100)
+        if self.degrees_selection.get() == 'Celsius':
+            unit = '°C'
+        elif self.degrees_selection.get() == 'Fahrenheit':
+            unit = '°F'
+        else:
+            unit = 'K'
+        figure = plt.Figure(figsize=(7.5, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
         line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10)
@@ -249,7 +279,7 @@ class Weather_app:
         ax2 = figure.add_subplot(111)
 
         ax2.set_xlabel('Date')
-        ax2.set_ylabel('Temperature / °C')
+        ax2.set_ylabel(f'Temperature / {unit}')
         ax2.set_title('Temperature forecast')
 
         ax2.plot(data['Date'], data['In Počasí'],
@@ -403,6 +433,32 @@ class Weather_app:
                 print(f"{indexes[i]} index was not found")
 
         return temperatures, dates
+
+    def unit_conversion(self, weather_data):
+        '''
+        '''
+        units = self.degrees_selection.get()
+
+        if units == 'Celsius':
+            return weather_data
+
+        elif units == 'Fahrenheit':
+            weather_data['temperatures_in_pocasi'] = [
+                round((T*1.8 + 32), 2) for T in weather_data['temperatures_in_pocasi']]
+            weather_data['temperatures_openweather'] = [
+                round((T*1.8 + 32), 2) for T in weather_data['temperatures_openweather']]
+            weather_data['temperatures_yr'] = [
+                round((T*1.8 + 32), 2) for T in weather_data['temperatures_yr']]
+
+        elif units == 'Kelvin':
+            weather_data['temperatures_in_pocasi'] = [
+                round((T+273.15), 2) for T in weather_data['temperatures_in_pocasi']]
+            weather_data['temperatures_openweather'] = [
+                round((T+273.15), 2) for T in weather_data['temperatures_openweather']]
+            weather_data['temperatures_yr'] = [
+                round((T+273.15), 2) for T in weather_data['temperatures_yr']]
+
+        return weather_data
 
 
 if __name__ == "__main__":
