@@ -200,6 +200,8 @@ class Weather_app:
 
     def fill_in_vectors(self, weather_data):
         '''
+        uses fill_in_vector method to fill in lists in weather_data to length of the longest one
+        :param weather_data: dict
         '''
 
         weather_data['temperatures_openweather'] = self.fill_in_vector(
@@ -436,6 +438,8 @@ class Weather_app:
 
     def unit_conversion(self, weather_data):
         '''
+        converse units of temperatures in weather_data dictionary according to selected units
+        :param weather_data: dict
         '''
         units = self.degrees_selection.get()
 
