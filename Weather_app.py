@@ -67,7 +67,7 @@ class Weather_app:
 
         button_exit = tkinter.Button(
             self.root, text="Zavřít", command=self.root.destroy)
-        button_exit.grid(row=99, column=8, columnspan=1, padx=10, pady=10)
+        button_exit.grid(row=99, column=10, columnspan=1, padx=10, pady=10)
 
     def show_temperatures(self):
         '''show temperatures in tkinter window and graph'''
@@ -274,7 +274,7 @@ class Weather_app:
         figure = plt.Figure(figsize=(7.5, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, self.root)
-        line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10)
+        line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10, padx=20)
 
         plt.style.use('ggplot')
 
