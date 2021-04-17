@@ -31,45 +31,38 @@ class Weather_app:
 
         self.show_temperatures()
         tkinter.Button(self.root, text="Zavřít", command=self.root.destroy).grid(
-            row=99, column=10, columnspan=1, padx=10, pady=10)
+            row=99, column=0, columnspan=1, padx=10, pady=10,)
         self.root.mainloop()
 
     def fill_in_input_frame(self):
         tkinter.Label(self.input_frame, text='City:').grid(
-            row=2, column=0, columnspan=1, pady=20)
+            row=0, column=0, pady=20, padx=20)
 
         place_options = ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
-
         self.place_selection = tkinter.StringVar()
         self.place_selection.set(place_options[0])
-        self.place_dropmenu = tkinter.OptionMenu(
-            self.input_frame, self.place_selection, *place_options)
-        self.place_dropmenu.grid(
-            row=2, column=1, columnspan=2)
+        tkinter.OptionMenu(self.input_frame, self.place_selection,
+                           *place_options).grid(row=0, column=1, pady=20, padx=20)
 
         tkinter.Label(self.input_frame, text='Units:').grid(
-            row=2, column=3, columnspan=1, pady=20)
+            row=0, column=2, pady=20, padx=20)
 
         degrees_options = ['Celsius', 'Fahrenheit', 'Kelvin']
         self.degrees_selection = tkinter.StringVar()
         self.degrees_selection.set(degrees_options[0])
-        self.degrees_dropmenu = tkinter.OptionMenu(
-            self.input_frame, self.degrees_selection, *degrees_options)
-        self.degrees_dropmenu.grid(
-            row=2, column=4, columnspan=2)
+        tkinter.OptionMenu(self.input_frame, self.degrees_selection,
+                           *degrees_options).grid(row=0, column=3, pady=20, padx=20)
 
-        button_get_temperatures = tkinter.Button(self.input_frame, text="get temperatures",
-                                                 command=lambda: self.show_temperatures())
-        button_get_temperatures.grid(
-            row=2, column=6, columnspan=2, padx=10, pady=10)
+        tkinter.Button(self.input_frame, text="get temperatures", command=lambda: self.show_temperatures()).grid(
+            row=0, column=4, pady=20, padx=20)
 
     def fill_in_temperatures_table(self):
         tkinter.Label(self.temperatures_table_frame, text='Openweather').grid(
-            row=6, column=0, columnspan=1, padx=20)
+            row=1, column=0, padx=20)
         tkinter.Label(self.temperatures_table_frame, text='In Počasí').grid(
-            row=7, column=0, columnspan=1)
+            row=2, column=0)
         tkinter.Label(self.temperatures_table_frame, text='Yr.no').grid(
-            row=8, column=0, columnspan=1)
+            row=3, column=0)
 
     def show_temperatures(self):
         '''show temperatures in tkinter window and graph'''
@@ -124,7 +117,7 @@ class Weather_app:
 
         day_position = len(self.days_labels)
 
-        self.days_labels[-1].grid(row=5,
+        self.days_labels[-1].grid(row=0,
                                   column=day_position, columnspan=1, padx=10)
 
         date = weather_data['dates'][index]
@@ -139,17 +132,17 @@ class Weather_app:
         self.open_temperatures[date] = tkinter.Label(
             self.temperatures_table_frame, text=(open_temperature), width=5)
         self.open_temperatures[date].grid(
-            row=6, column=day_position, columnspan=1)
+            row=1, column=day_position, columnspan=1)
 
         self.in_temperatures[date] = tkinter.Label(
             self.temperatures_table_frame, text=(in_temperature), width=5)
         self.in_temperatures[date].grid(
-            row=7, column=day_position, columnspan=1)
+            row=2, column=day_position, columnspan=1)
 
         self.yr_temperatures[date] = tkinter.Label(
             self.temperatures_table_frame, text=(yr_temperature), width=5)
         self.yr_temperatures[date].grid(
-            row=8, column=day_position, columnspan=1)
+            row=3, column=day_position, columnspan=1)
 
     def add_degrees_symbol(self, temperature):
         '''
