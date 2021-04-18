@@ -26,7 +26,6 @@ class WeatherApp:
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820, bg='red')
         self.temperatures_table_frame.grid(row=1, column=0)
-
         self.fill_in_temperatures_table()
 
         tkinter.Button(self.root, text="Zavřít", command=self.root.destroy).grid(
