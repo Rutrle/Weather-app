@@ -18,10 +18,10 @@ class WeatherApp:
         self.root.title('Weather forecast comparison')
         self.root.geometry('820x600')
 
-        self.input_frame = tkinter.Frame(
+        control_frame = tkinter.Frame(
             self.root, height=200, width=820, bg='blue')
-        self.input_frame.grid(row=0, column=0)
-        self.fill_in_input_frame()
+        control_frame.grid(row=0, column=0)
+        self.fill_in_control_frame(control_frame)
 
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820, bg='red')
@@ -33,26 +33,26 @@ class WeatherApp:
 
         self.root.mainloop()
 
-    def fill_in_input_frame(self):
-        tkinter.Label(self.input_frame, text='City:').grid(
+    def fill_in_control_frame(self, frame):
+        tkinter.Label(frame, text='City:').grid(
             row=0, column=0, pady=20, padx=20)
 
         place_options = ['Praha', 'Brno', 'Kvilda', 'Nová Paka']
         self.place_selection = tkinter.StringVar()
         self.place_selection.set(place_options[0])
-        tkinter.OptionMenu(self.input_frame, self.place_selection,
+        tkinter.OptionMenu(frame, self.place_selection,
                            *place_options).grid(row=0, column=1, pady=20, padx=20)
 
-        tkinter.Label(self.input_frame, text='Units:').grid(
+        tkinter.Label(frame, text='Units:').grid(
             row=0, column=2, pady=20, padx=20)
 
         degrees_options = ['Celsius', 'Fahrenheit', 'Kelvin']
         self.degrees_selection = tkinter.StringVar()
         self.degrees_selection.set(degrees_options[0])
-        tkinter.OptionMenu(self.input_frame, self.degrees_selection,
+        tkinter.OptionMenu(frame, self.degrees_selection,
                            *degrees_options).grid(row=0, column=3, pady=20, padx=20)
 
-        tkinter.Button(self.input_frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table()).grid(
+        tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table()).grid(
             row=0, column=4, pady=20, padx=20)
 
     def fill_in_temperatures_table(self):
@@ -287,16 +287,6 @@ class WeatherApp:
 
             dates.append(date)
             temperatures.append(temperature)
-            # used for exploring data
-            '''
-            print(date, '.'*int(temperature//1), temperature)
-            print(date.strftime('%H'))
-            '''
-
-        ''' saving whole dataset from openweather to json file for exploring
-        with open('weather.json', 'w') as file:
-        json.dump(api_request, file, indent=4)
-        '''
 
         temperatures, dates = self.prepare_api_data(
             temperatures, dates)
