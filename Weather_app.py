@@ -28,6 +28,10 @@ class WeatherApp:
         self.temperatures_table_frame.grid(row=1, column=0)
         self.fill_in_temperatures_table()
 
+        self.temperatures_graph_frame = tkinter.Frame(
+            self.root, height=200, width=820)
+        self.temperatures_graph_frame.grid(row=2, column=0)
+
         tkinter.Button(self.root, text="Close", command=self.root.destroy).grid(
             row=99, column=0, columnspan=1, padx=10, pady=10)
 
