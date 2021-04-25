@@ -16,19 +16,19 @@ class WeatherApp:
         self.root = tkinter.Tk()
 
         self.root.title('Weather forecast comparison')
-        self.root.geometry('820x600')
+        self.root.geometry('820x620')
 
         control_frame = tkinter.Frame(
-            self.root, height=200, width=820, bg='blue')
+            self.root, height=200, width=820)
         control_frame.grid(row=0, column=0)
         self.fill_in_control_frame(control_frame)
 
         self.temperatures_table_frame = tkinter.Frame(
-            self.root, height=200, width=820, bg='red')
+            self.root, height=200, width=820)
         self.temperatures_table_frame.grid(row=1, column=0)
         self.fill_in_temperatures_table()
 
-        tkinter.Button(self.root, text="Zavřít", command=self.root.destroy).grid(
+        tkinter.Button(self.root, text="Close", command=self.root.destroy).grid(
             row=99, column=0, columnspan=1, padx=10, pady=10)
 
         self.root.mainloop()
