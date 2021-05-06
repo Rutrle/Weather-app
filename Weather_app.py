@@ -18,15 +18,15 @@ class WeatherApp:
         self.root.title('Weather forecast comparison')
         self.root.geometry('820x620')
 
-        control_frame = tkinter.Frame(
+        user_input_frame = tkinter.Frame(
             self.root, height=200, width=820)
-        control_frame.grid(row=0, column=0)
-        self.fill_in_control_frame(control_frame)
+        user_input_frame.grid(row=0, column=0)
+        self.fill_in_user_input_frame(user_input_frame)
 
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_table_frame.grid(row=1, column=0)
-        self.fill_in_temperatures_table()
+        self.fill_in_temperatures_table(self.temperatures_table_frame)
 
         self.temperatures_graph_frame = tkinter.Frame(
             self.root, height=200, width=820)
@@ -37,7 +37,7 @@ class WeatherApp:
 
         self.root.mainloop()
 
-    def fill_in_control_frame(self, frame):
+    def fill_in_user_input_frame(self, frame):
         tkinter.Label(frame, text='City:').grid(
             row=0, column=0, pady=20, padx=20)
 
@@ -56,27 +56,23 @@ class WeatherApp:
         tkinter.OptionMenu(frame, self.degrees_selection,
                            *degrees_options).grid(row=0, column=3, pady=20, padx=20)
 
-        tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table()).grid(
+        tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table(self.temperatures_table_frame)).grid(
             row=0, column=4, pady=20, padx=20)
 
-    def fill_in_temperatures_table(self):
-        '''show temperatures in tkinter window and graph'''
-        tkinter.Label(self.temperatures_table_frame, text='Openweather').grid(
-            row=1, column=0, padx=20)
-        tkinter.Label(self.temperatures_table_frame, text='In Počasí').grid(
-            row=2, column=0)
-        tkinter.Label(self.temperatures_table_frame, text='Yr.no').grid(
-            row=3, column=0)
+    def fill_in_temperatures_table(self, frame):
+        '''creates table showing temperatures in given frame'''
+        tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
+        tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
+        tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
 
         weather_data = self.get_weather_data()
-
-        weather_data = self.unit_conversion(weather_data)
 
         self.plot_temperatures(weather_data)
         print(weather_data['length'])
         weather_data = self.fill_in_vectors(weather_data)
+        weather_data = self.unit_conversion(weather_data)
 
-        self.fill_in_days(weather_data)
+        self.fill_in_days(weather_data, frame)
 
     def get_weather_data(self):
         '''collects weather data from all sources and returns them in dictionary of lists'''
@@ -93,7 +89,7 @@ class WeatherApp:
 
         return weather_data
 
-    def fill_in_days(self, weather_data):
+    def fill_in_days(self, weather_data, frame):
         '''
         fill in informations for all days
         :param weather_data: dictionary of lists
@@ -102,7 +98,7 @@ class WeatherApp:
         for index in range(weather_data['length']):
             day_position = index+1
 
-            tkinter.Label(self.temperatures_table_frame, text=weather_data['dates'][index]).grid(
+            tkinter.Label(frame, text=weather_data['dates'][index]).grid(
                 row=0, column=day_position, columnspan=1, padx=10)
 
             open_temperature = self.add_degrees_symbol(
@@ -112,11 +108,11 @@ class WeatherApp:
             yr_temperature = self.add_degrees_symbol(
                 str(weather_data['temperatures_yr'][index]))
 
-            tkinter.Label(self.temperatures_table_frame, text=(open_temperature), width=5).grid(
+            tkinter.Label(frame, text=(open_temperature), width=5).grid(
                 row=1, column=day_position, columnspan=1)
-            tkinter.Label(self.temperatures_table_frame, text=(in_temperature), width=5).grid(
+            tkinter.Label(frame, text=(in_temperature), width=5).grid(
                 row=2, column=day_position, columnspan=1)
-            tkinter.Label(self.temperatures_table_frame, text=(yr_temperature), width=5).grid(
+            tkinter.Label(frame, text=(yr_temperature), width=5).grid(
                 row=3, column=day_position, columnspan=1)
 
     def add_degrees_symbol(self, temperature):
@@ -423,6 +419,12 @@ class WeatherApp:
                 round((T+273.15), 2) for T in weather_data['temperatures_yr']]
 
         return weather_data
+
+
+class GetWeatherForecasts:
+
+    def __init__(self, unit_type):
+        pass
 
 
 if __name__ == "__main__":
