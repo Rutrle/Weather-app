@@ -59,6 +59,9 @@ class WeatherApp:
         tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table(self.temperatures_table_frame)).grid(
             row=0, column=4, pady=20, padx=20)
 
+        def button_press(frame):
+            pass
+
     def fill_in_temperatures_table(self, frame):
         '''creates table showing temperatures in given frame'''
         tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
