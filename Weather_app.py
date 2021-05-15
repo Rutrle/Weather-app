@@ -406,31 +406,28 @@ class WeatherApp:
             return weather_data
 
         elif units == 'Fahrenheit':
-            for T in weather_data['temperatures_in_pocasi']:
-                if isinstance(T, str):
+            for i in range(len(weather_data['temperatures_in_pocasi'])):
+                if isinstance(weather_data['temperatures_in_pocasi'][i], str):
                     pass
                 else:
-                    T = round((T*1.8 + 32), 2)
-            for T in weather_data['temperatures_openweather']:
-                if isinstance(T, str):
-                    pass
-                else:
-                    T = round((T*1.8 + 32), 2)
+                    weather_data['temperatures_in_pocasi'][i] = round(
+                        (weather_data['temperatures_in_pocasi'][i]*1.8 + 32), 2)
 
-            for T in weather_data['temperatures_yr']:
-                if isinstance(T, str):
+            for i in range(len(weather_data['temperatures_openweather'])):
+                if isinstance(weather_data['temperatures_openweather'][i], str):
                     pass
                 else:
-                    T = round((T*1.8 + 32), 2)
+                    weather_data['temperatures_openweather'][i] = round(
+                        (weather_data['temperatures_openweather'][i]*1.8 + 32), 2)
+
+            for i in range(len(weather_data['temperatures_yr'])):
+                if isinstance(weather_data['temperatures_yr'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_yr'][i] = round(
+                        (weather_data['temperatures_yr'][i]*1.8 + 32), 2)
 
         elif units == 'Kelvin':
-            # weather_data['temperatures_in_pocasi'] = [
-            #    round((T+273.15), 2) for T in weather_data['temperatures_in_pocasi']]
-
-            # weather_data['temperatures_openweather'] = [
-            #    round((T+273.15), 2) for T in weather_data['temperatures_openweather']]
-            # weather_data['temperatures_yr'] = [
-            #    round((T+273.15), 2) for T in weather_data['temperatures_yr']]
             for i in range(len(weather_data['temperatures_in_pocasi'])):
                 if isinstance(weather_data['temperatures_in_pocasi'][i], str):
                     pass
