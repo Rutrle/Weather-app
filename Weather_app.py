@@ -22,11 +22,16 @@ class WeatherApp:
             self.root, height=200, width=820)
         user_input_frame.grid(row=0, column=0)
         self.fill_in_user_input_frame(user_input_frame)
+        weather_forecast = GetWeatherForecasts(self.place_selection.get())
+        weather_data = weather_forecast.weather_data
+
+# self.place_selection.get()
 
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_table_frame.grid(row=1, column=0)
-        self.fill_in_temperatures_table(self.temperatures_table_frame)
+        self.fill_in_temperatures_table(
+            self.temperatures_table_frame, weather_data)
 
         self.temperatures_graph_frame = tkinter.Frame(
             self.root, height=200, width=820)
@@ -56,19 +61,19 @@ class WeatherApp:
         tkinter.OptionMenu(frame, self.degrees_selection,
                            *degrees_options).grid(row=0, column=3, pady=20, padx=20)
 
-        tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_temperatures_table(self.temperatures_table_frame)).grid(
+        tkinter.Button(frame, text="get temperatures", command=lambda: button_press()).grid(
             row=0, column=4, pady=20, padx=20)
 
-        def button_press(frame):
-            pass
+        def button_press():
+            weather_data = self.get_weather_data(self.place_selection.get())
+            self.fill_in_temperatures_table(
+                self.temperatures_table_frame, weather_data)
 
-    def fill_in_temperatures_table(self, frame):
+    def fill_in_temperatures_table(self, frame, weather_data):
         '''creates table showing temperatures in given frame'''
         tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
         tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
         tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
-
-        weather_data = self.get_weather_data()
 
         self.plot_temperatures(weather_data)
         print(weather_data['length'])
@@ -76,21 +81,6 @@ class WeatherApp:
         weather_data = self.unit_conversion(weather_data)
 
         self.fill_in_days(weather_data, frame)
-
-    def get_weather_data(self):
-        '''collects weather data from all sources and returns them in dictionary of lists'''
-        temperatures_openweather, dates_openweather = self.get_data_openweather(
-            self.place_selection.get())
-        temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
-            self.place_selection.get())
-        temperatures_yr, dates_yr = self.get_yr_data(
-            self.place_selection.get())
-
-        weather_data = self.prepare_weather_data(
-            dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr)
-        print(weather_data)
-
-        return weather_data
 
     def fill_in_days(self, weather_data, frame):
         '''
@@ -132,40 +122,6 @@ class WeatherApp:
             elif self.degrees_selection.get() == 'Kelvin':
                 temperature = temperature + ' K'
         return temperature
-
-    def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr):
-        '''
-        prepares weather data from different sources into one dictionary weather_data, which it returns
-        :param dates_openweather: list
-        :param temperatures_openweather: list
-        :param dates_in_pocasi: list
-        :param temperatures_in_pocasi: list
-        :param temperatures_yr: list
-        :param dates_yr: list
-        '''
-        weather_data = {}
-
-        max_length = max(len(dates_in_pocasi), len(
-            dates_openweather), len(dates_yr))
-        print(max_length)
-
-        if max_length == len(dates_yr):
-            weather_data['dates'] = dates_yr
-        elif max_length == len(dates_in_pocasi):
-            weather_data['dates'] = dates_in_pocasi
-        else:
-            weather_data['dates'] = dates_in_pocasi
-
-        weather_data['temperatures_openweather'] = temperatures_openweather
-        weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
-        weather_data['temperatures_yr'] = temperatures_yr
-        weather_data['length'] = max_length
-
-        weather_data['dates_openweather'] = dates_openweather
-        weather_data['dates_in_pocasi'] = dates_in_pocasi
-        weather_data['dates_yr'] = dates_yr
-
-        return weather_data
 
     def fill_in_vectors(self, weather_data):
         '''
@@ -262,6 +218,118 @@ class WeatherApp:
                  color='b', marker="o", label='Yr.no')
 
         ax2.legend()
+
+    def unit_conversion(self, weather_data):
+        '''
+        converse units of temperatures in weather_data dictionary according to selected units
+        :param weather_data: dict
+        '''
+        units = self.degrees_selection.get()
+        print(weather_data)
+        if units == 'Celsius':
+            return weather_data
+
+        elif units == 'Fahrenheit':
+            for i in range(len(weather_data['temperatures_in_pocasi'])):
+                if isinstance(weather_data['temperatures_in_pocasi'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_in_pocasi'][i] = round(
+                        (weather_data['temperatures_in_pocasi'][i]*1.8 + 32), 2)
+
+            for i in range(len(weather_data['temperatures_openweather'])):
+                if isinstance(weather_data['temperatures_openweather'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_openweather'][i] = round(
+                        (weather_data['temperatures_openweather'][i]*1.8 + 32), 2)
+
+            for i in range(len(weather_data['temperatures_yr'])):
+                if isinstance(weather_data['temperatures_yr'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_yr'][i] = round(
+                        (weather_data['temperatures_yr'][i]*1.8 + 32), 2)
+
+        elif units == 'Kelvin':
+            for i in range(len(weather_data['temperatures_in_pocasi'])):
+                if isinstance(weather_data['temperatures_in_pocasi'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_in_pocasi'][i] = round(
+                        (weather_data['temperatures_in_pocasi'][i]+273.15), 2)
+
+            for i in range(len(weather_data['temperatures_openweather'])):
+                if isinstance(weather_data['temperatures_openweather'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_openweather'][i] = round(
+                        (weather_data['temperatures_openweather'][i]+273.15), 2)
+
+            for i in range(len(weather_data['temperatures_yr'])):
+                if isinstance(weather_data['temperatures_yr'][i], str):
+                    pass
+                else:
+                    weather_data['temperatures_yr'][i] = round(
+                        (weather_data['temperatures_yr'][i]+273.15), 2)
+
+        print(weather_data)
+        return weather_data
+
+
+class GetWeatherForecasts:
+
+    def __init__(self, place):
+        self.weather_data = self.get_weather_data(place)
+
+    def get_weather_data(self, place):
+        '''collects weather data from all sources and returns them in dictionary of lists'''
+        temperatures_openweather, dates_openweather = self.get_data_openweather(
+            place)
+        temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
+            place)
+        temperatures_yr, dates_yr = self.get_yr_data(
+            place)
+
+        weather_data = self.prepare_weather_data(
+            dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr)
+        print(weather_data)
+
+        return weather_data
+
+    def prepare_weather_data(self, dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr):
+        '''
+        prepares weather data from different sources into one dictionary weather_data, which it returns
+        :param dates_openweather: list
+        :param temperatures_openweather: list
+        :param dates_in_pocasi: list
+        :param temperatures_in_pocasi: list
+        :param temperatures_yr: list
+        :param dates_yr: list
+        '''
+        weather_data = {}
+
+        max_length = max(len(dates_in_pocasi), len(
+            dates_openweather), len(dates_yr))
+        print(max_length)
+
+        if max_length == len(dates_yr):
+            weather_data['dates'] = dates_yr
+        elif max_length == len(dates_in_pocasi):
+            weather_data['dates'] = dates_in_pocasi
+        else:
+            weather_data['dates'] = dates_in_pocasi
+
+        weather_data['temperatures_openweather'] = temperatures_openweather
+        weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
+        weather_data['temperatures_yr'] = temperatures_yr
+        weather_data['length'] = max_length
+
+        weather_data['dates_openweather'] = dates_openweather
+        weather_data['dates_in_pocasi'] = dates_in_pocasi
+        weather_data['dates_yr'] = dates_yr
+
+        return weather_data
 
     def get_data_openweather(self, place):
         '''
@@ -394,69 +462,6 @@ class WeatherApp:
                 print(f"{indexes[i]} index was not found")
 
         return temperatures, dates
-
-    def unit_conversion(self, weather_data):
-        '''
-        converse units of temperatures in weather_data dictionary according to selected units
-        :param weather_data: dict
-        '''
-        units = self.degrees_selection.get()
-        print(weather_data)
-        if units == 'Celsius':
-            return weather_data
-
-        elif units == 'Fahrenheit':
-            for i in range(len(weather_data['temperatures_in_pocasi'])):
-                if isinstance(weather_data['temperatures_in_pocasi'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_in_pocasi'][i] = round(
-                        (weather_data['temperatures_in_pocasi'][i]*1.8 + 32), 2)
-
-            for i in range(len(weather_data['temperatures_openweather'])):
-                if isinstance(weather_data['temperatures_openweather'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_openweather'][i] = round(
-                        (weather_data['temperatures_openweather'][i]*1.8 + 32), 2)
-
-            for i in range(len(weather_data['temperatures_yr'])):
-                if isinstance(weather_data['temperatures_yr'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_yr'][i] = round(
-                        (weather_data['temperatures_yr'][i]*1.8 + 32), 2)
-
-        elif units == 'Kelvin':
-            for i in range(len(weather_data['temperatures_in_pocasi'])):
-                if isinstance(weather_data['temperatures_in_pocasi'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_in_pocasi'][i] = round(
-                        (weather_data['temperatures_in_pocasi'][i]+273.15), 2)
-
-            for i in range(len(weather_data['temperatures_openweather'])):
-                if isinstance(weather_data['temperatures_openweather'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_openweather'][i] = round(
-                        (weather_data['temperatures_openweather'][i]+273.15), 2)
-
-            for i in range(len(weather_data['temperatures_yr'])):
-                if isinstance(weather_data['temperatures_yr'][i], str):
-                    pass
-                else:
-                    weather_data['temperatures_yr'][i] = round(
-                        (weather_data['temperatures_yr'][i]+273.15), 2)
-
-        print(weather_data)
-        return weather_data
-
-
-class GetWeatherForecasts:
-
-    def __init__(self, unit_type):
-        pass
 
 
 if __name__ == "__main__":
