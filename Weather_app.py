@@ -211,7 +211,7 @@ class WeatherApp:
         figure = plt.Figure(figsize=(7.5, 3.9), dpi=100)
 
         line2 = FigureCanvasTkAgg(figure, frame)
-        line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10, padx=20)
+        line2.get_tk_widget().grid(row=0, column=0, pady=10, padx=20)
 
         plt.style.use('ggplot')
 
@@ -225,7 +225,6 @@ class WeatherApp:
                  color='r', marker="o", label='In Počasí')
         ax2.plot(data_open['Open Date'], data_open['Open Počasí'],
                  color='g', marker="o", label='Open weather')
-
         ax2.plot(data_yr['Yr_date'], data_yr['Yr_temperature'],
                  color='b', marker="o", label='Yr.no')
 
@@ -387,8 +386,9 @@ class GetWeatherForecasts:
         sorted_temperatures = defaultdict(list)
 
         for i in range(len(dates)):
-            sorted_temperatures[dates[i].strftime(
-                '%d. %m.')].append(temperatures[i])
+            if(dates[i] >= datetime.datetime.today()):
+                sorted_temperatures[dates[i].strftime(
+                    '%d. %m.')].append(temperatures[i])
 
         for date in sorted_temperatures:
             max_day_temperatures.append((max(sorted_temperatures[date])))
@@ -425,10 +425,11 @@ class GetWeatherForecasts:
         relevant_data = api_request['properties']['timeseries']
 
         temperatures, dates = [], []
-
         for weather_log in relevant_data:
+
             date = datetime.datetime.strptime(
                 weather_log['time'], '%Y-%m-%dT%H:%M:%SZ')
+
             dates.append(date)
             temperatures.append(
                 weather_log['data']['instant']['details']['air_temperature'])
