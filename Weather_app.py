@@ -25,8 +25,6 @@ class WeatherApp:
         weather_forecast = GetWeatherForecasts(self.place_selection.get())
         weather_data = weather_forecast.weather_data
 
-# self.place_selection.get()
-
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_table_frame.grid(row=1, column=0)
@@ -36,6 +34,8 @@ class WeatherApp:
         self.temperatures_graph_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_graph_frame.grid(row=2, column=0)
+
+        self.fill_in_graph(self.temperatures_graph_frame, weather_data)
 
         tkinter.Button(self.root, text="Close", command=self.root.destroy).grid(
             row=99, column=0, columnspan=1, padx=10, pady=10)
@@ -69,19 +69,17 @@ class WeatherApp:
             weather_data = weather_forecast.weather_data
             self.fill_in_temperatures_table(
                 self.temperatures_table_frame, weather_data)
+            self.fill_in_graph(self.temperatures_graph_frame, weather_data)
 
     def fill_in_temperatures_table(self, frame, weather_data):
         '''creates table showing temperatures in given frame'''
         tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
         tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
         tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
-        weather_data = self.unit_conversion(weather_data)
-        self.plot_temperatures(weather_data)
 
-        print(weather_data['length'])
         weather_data = self.fill_in_vectors(weather_data)
         weather_data = self.unit_conversion(weather_data)
-
+        print(weather_data['length'])
         self.fill_in_days(weather_data, frame)
 
     def fill_in_days(self, weather_data, frame):
@@ -159,12 +157,17 @@ class WeatherApp:
             vector.append('NA')
         return vector
 
-    def plot_temperatures(self, weather_data):
+    def fill_in_graph(self, frame, weather_data):
+        weather_data = self.fill_in_vectors(weather_data)
+        weather_data = self.unit_conversion(weather_data)
+        self.plot_temperatures(frame, weather_data)
+
+    def plot_temperatures(self, frame, weather_data):
         '''
         plots temperature forecasts in tkinter window
         :param weather_data: dictionary of lists
         '''
-        num_temperatures, open_temperatures, in_pocasi_temperatures, date_open, date_in_pocasi = [], [], [], [], []
+        num_temperatures, open_temperatures, in_pocasi_temperatures, date_open, date_in_pocasi, date_yr, yr_temperatures = [], [], [], [], [], [], []
 
         num_temperatures = weather_data['temperatures_in_pocasi']
 
@@ -182,14 +185,21 @@ class WeatherApp:
                     weather_data['temperatures_in_pocasi'][i])
                 date_in_pocasi.append(weather_data['dates'][i])
 
+        for i in range(len(weather_data['temperatures_yr'])):
+
+            if weather_data['temperatures_yr'][i] != 'NA':
+                yr_temperatures.append(
+                    weather_data['temperatures_yr'][i])
+                date_yr.append(weather_data['dates'][i])
+
         data = {'Date': date_in_pocasi,
                 'In Počasí': in_pocasi_temperatures
                 }
         data_open = {'Open Date': date_open,
                      'Open Počasí': open_temperatures
                      }
-        data_yr = {'Yr_date': weather_data['dates'],
-                   'Yr_temperature': weather_data['temperatures_yr']
+        data_yr = {'Yr_date': date_yr,
+                   'Yr_temperature': yr_temperatures
                    }
 
         if self.degrees_selection.get() == 'Celsius':
@@ -200,7 +210,7 @@ class WeatherApp:
             unit = 'K'
         figure = plt.Figure(figsize=(7.5, 3.9), dpi=100)
 
-        line2 = FigureCanvasTkAgg(figure, self.root)
+        line2 = FigureCanvasTkAgg(figure, frame)
         line2.get_tk_widget().grid(row=9, column=0, columnspan=14, pady=10, padx=20)
 
         plt.style.use('ggplot')
