@@ -65,7 +65,8 @@ class WeatherApp:
             row=0, column=4, pady=20, padx=20)
 
         def button_press():
-            weather_data = self.get_weather_data(self.place_selection.get())
+            weather_forecast = GetWeatherForecasts(self.place_selection.get())
+            weather_data = weather_forecast.weather_data
             self.fill_in_temperatures_table(
                 self.temperatures_table_frame, weather_data)
 
@@ -74,8 +75,9 @@ class WeatherApp:
         tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
         tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
         tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
-
+        weather_data = self.unit_conversion(weather_data)
         self.plot_temperatures(weather_data)
+
         print(weather_data['length'])
         weather_data = self.fill_in_vectors(weather_data)
         weather_data = self.unit_conversion(weather_data)
