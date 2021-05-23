@@ -22,25 +22,29 @@ class WeatherApp:
             self.root, height=200, width=820)
         user_input_frame.grid(row=0, column=0)
         self.fill_in_user_input_frame(user_input_frame)
-        weather_forecast = GetWeatherForecasts(self.place_selection.get())
-        weather_data = weather_forecast.weather_data
 
         self.temperatures_table_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_table_frame.grid(row=1, column=0)
-        self.fill_in_temperatures_table(
-            self.temperatures_table_frame, weather_data)
 
         self.temperatures_graph_frame = tkinter.Frame(
             self.root, height=200, width=820)
         self.temperatures_graph_frame.grid(row=2, column=0)
 
-        self.fill_in_graph(self.temperatures_graph_frame, weather_data)
+        self.fill_in_weather_forecasts(self.place_selection.get())
 
         tkinter.Button(self.root, text="Close", command=self.root.destroy).grid(
             row=99, column=0, columnspan=1, padx=10, pady=10)
 
         self.root.mainloop()
+
+    def fill_in_weather_forecasts(self, place):
+        weather_forecast = GetWeatherForecasts(place)
+        weather_data = weather_forecast.weather_data
+
+        self.fill_in_temperatures_table(
+            self.temperatures_table_frame, weather_data)
+        self.fill_in_graph(self.temperatures_graph_frame, weather_data)
 
     def fill_in_user_input_frame(self, frame):
         """fills in input tools for user to frame
@@ -64,15 +68,8 @@ class WeatherApp:
         tkinter.OptionMenu(frame, self.degrees_selection,
                            *degrees_options).grid(row=0, column=3, pady=20, padx=20)
 
-        tkinter.Button(frame, text="get temperatures", command=lambda: button_press()).grid(
+        tkinter.Button(frame, text="get temperatures", command=lambda: self.fill_in_weather_forecasts(self.place_selection.get())).grid(
             row=0, column=4, pady=20, padx=20)
-
-        def button_press():
-            weather_forecast = GetWeatherForecasts(self.place_selection.get())
-            weather_data = weather_forecast.weather_data
-            self.fill_in_temperatures_table(
-                self.temperatures_table_frame, weather_data)
-            self.fill_in_graph(self.temperatures_graph_frame, weather_data)
 
     def fill_in_temperatures_table(self, frame, weather_data):
         '''creates table showing temperatures in given frame'''
@@ -161,6 +158,11 @@ class WeatherApp:
         return vector
 
     def fill_in_graph(self, frame, weather_data):
+        """
+        display temperature forecasts graph in a given frame
+        :param frame: tkinter frame obj
+        :param weather_data: dict
+        """
         weather_data = self.fill_in_vectors(weather_data)
         weather_data = self.unit_conversion(weather_data)
         self.plot_temperatures(frame, weather_data)
