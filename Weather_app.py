@@ -10,7 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class WeatherApp:
-    '''app for getting weather forecast from multiple websites and displaying those data'''
+    '''app for displaying weather forecast from multiple web sources'''
 
     def __init__(self):
         self.root = tkinter.Tk()
@@ -43,6 +43,9 @@ class WeatherApp:
         self.root.mainloop()
 
     def fill_in_user_input_frame(self, frame):
+        """fills in input tools for user to frame
+        :param frame: tkinter frame  object
+        """
         tkinter.Label(frame, text='City:').grid(
             row=0, column=0, pady=20, padx=20)
 
@@ -179,14 +182,12 @@ class WeatherApp:
                 date_open.append(weather_data['dates'][i])
 
         for i in range(len(weather_data['temperatures_in_pocasi'])):
-
             if weather_data['temperatures_in_pocasi'][i] != 'NA':
                 in_pocasi_temperatures.append(
                     weather_data['temperatures_in_pocasi'][i])
                 date_in_pocasi.append(weather_data['dates'][i])
 
         for i in range(len(weather_data['temperatures_yr'])):
-
             if weather_data['temperatures_yr'][i] != 'NA':
                 yr_temperatures.append(
                     weather_data['temperatures_yr'][i])
