@@ -464,34 +464,12 @@ class GetWeatherForecasts:
         uses fill_in_vector method to fill in lists in weather_data to length of the longest one
         :param weather_data: dict
         '''
-
-        weather_data['temperatures_openweather'] = self.fill_in_vector(
-            weather_data['temperatures_openweather'], weather_data['length'])
-
-        weather_data['dates_openweather'] = self.fill_in_vector(
-            weather_data['dates_openweather'], weather_data['length'])
-
-        weather_data['temperatures_in_pocasi'] = self.fill_in_vector(
-            weather_data['temperatures_in_pocasi'], weather_data['length'])
-        weather_data['dates_in_pocasi'] = self.fill_in_vector(
-            weather_data['dates_in_pocasi'], weather_data['length'])
-
-        weather_data['temperatures_yr'] = self.fill_in_vector(
-            weather_data['temperatures_yr'], weather_data['length'])
-        weather_data['dates_yr'] = self.fill_in_vector(
-            weather_data['dates_yr'], weather_data['length'])
+        for key in weather_data:
+            if key != 'length':
+                while len(weather_data[key]) < weather_data['length']:
+                    weather_data[key].append('NA')
 
         return weather_data
-
-    def fill_in_vector(self, vector, final_length):
-        '''
-        appends given vector with "NA" until it reaches length final_length
-        :param vector: list
-        :param final_length: int
-        '''
-        while len(vector) < final_length:
-            vector.append('NA')
-        return vector
 
 
 if __name__ == "__main__":
