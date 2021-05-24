@@ -287,7 +287,8 @@ class GetWeatherForecasts:
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr)
         print(weather_data)
-        weather_data = self.fill_in_vectors(weather_data)
+        weather_data = self.fill_in_vectors(
+            weather_data, weather_data['length'])
 
         return weather_data
 
@@ -459,14 +460,14 @@ class GetWeatherForecasts:
 
         return temperatures, dates
 
-    def fill_in_vectors(self, weather_data):
+    def fill_in_vectors(self, weather_data, length):
         '''
-        uses fill_in_vector method to fill in lists in weather_data to length of the longest one
+        uses fill_in_vector method to fill in lists in weather_data to length 
         :param weather_data: dict
         '''
         for key in weather_data:
-            if key != 'length':
-                while len(weather_data[key]) < weather_data['length']:
+            if isinstance(weather_data[key], list):
+                while len(weather_data[key]) < length:
                     weather_data[key].append('NA')
 
         return weather_data
