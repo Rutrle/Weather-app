@@ -39,6 +39,10 @@ class WeatherApp:
         self.root.mainloop()
 
     def fill_in_weather_forecasts(self, place):
+        """
+        fills weather forecast info for given place both as table and as graph  to the tkinter window, also used when button get temperatures is pressed
+        :param place: str
+        """
         weather_forecast = GetWeatherForecasts(place)
         weather_data = weather_forecast.weather_data
 
@@ -47,7 +51,8 @@ class WeatherApp:
         self.fill_in_graph(self.temperatures_graph_frame, weather_data)
 
     def fill_in_user_input_frame(self, frame):
-        """fills in input tools for user to frame
+        """
+        fills in input tools for user to frame
         :param frame: tkinter frame  object
         """
         tkinter.Label(frame, text='City:').grid(
@@ -72,7 +77,11 @@ class WeatherApp:
             row=0, column=4, pady=20, padx=20)
 
     def fill_in_temperatures_table(self, frame, weather_data):
-        '''creates table showing temperatures in given frame'''
+        '''
+        creates table showing temperatures in given frame
+        :param frame: tkinter frame obj
+        :param weather_data: dictionary
+        '''
         tkinter.Label(frame, text='Openweather').grid(row=1, column=0, padx=20)
         tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
         tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
@@ -86,6 +95,7 @@ class WeatherApp:
         '''
         fill in informations for all days
         :param weather_data: dictionary of lists
+        :param frame: tkinter frame obj
         '''
         self.days_labels = []
         for index in range(weather_data['length']):
@@ -172,9 +182,7 @@ class WeatherApp:
         plots temperature forecasts in tkinter window
         :param weather_data: dictionary of lists
         '''
-        num_temperatures, open_temperatures, in_pocasi_temperatures, date_open, date_in_pocasi, date_yr, yr_temperatures = [], [], [], [], [], [], []
-
-        num_temperatures = weather_data['temperatures_in_pocasi']
+        open_temperatures, in_pocasi_temperatures, date_open, date_in_pocasi, date_yr, yr_temperatures = [], [], [], [], [], []
 
         for i in range(len(weather_data['temperatures_openweather'])):
 
@@ -399,7 +407,7 @@ class GetWeatherForecasts:
 
         today_date = (datetime.date.today())
         if prepared_dates[0] != today_date.strftime('%d. %m.'):
-            prepared_dates.insert(0, 'NA')
+            prepared_dates.insert(0,  today_date.strftime('%d. %m.'))
             max_day_temperatures.insert(0, 'NA')
 
         return max_day_temperatures, prepared_dates
