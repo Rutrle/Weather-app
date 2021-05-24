@@ -86,7 +86,6 @@ class WeatherApp:
         tkinter.Label(frame, text='In Počasí').grid(row=2, column=0)
         tkinter.Label(frame, text='Yr.no').grid(row=3, column=0)
 
-        weather_data = self.fill_in_vectors(weather_data)
         weather_data = self.unit_conversion(weather_data)
         print(weather_data['length'])
         self.fill_in_days(weather_data, frame)
@@ -133,47 +132,13 @@ class WeatherApp:
                 temperature = temperature + ' K'
         return temperature
 
-    def fill_in_vectors(self, weather_data):
-        '''
-        uses fill_in_vector method to fill in lists in weather_data to length of the longest one
-        :param weather_data: dict
-        '''
-
-        weather_data['temperatures_openweather'] = self.fill_in_vector(
-            weather_data['temperatures_openweather'], weather_data['length'])
-
-        weather_data['dates_openweather'] = self.fill_in_vector(
-            weather_data['dates_openweather'], weather_data['length'])
-
-        weather_data['temperatures_in_pocasi'] = self.fill_in_vector(
-            weather_data['temperatures_in_pocasi'], weather_data['length'])
-        weather_data['dates_in_pocasi'] = self.fill_in_vector(
-            weather_data['dates_in_pocasi'], weather_data['length'])
-
-        weather_data['temperatures_yr'] = self.fill_in_vector(
-            weather_data['temperatures_yr'], weather_data['length'])
-        weather_data['dates_yr'] = self.fill_in_vector(
-            weather_data['dates_yr'], weather_data['length'])
-
-        return weather_data
-
-    def fill_in_vector(self, vector, final_length):
-        '''
-        appends given vector with "NA" until it reaches length final_length
-        :param vector: list
-        :param final_length: int
-        '''
-        while len(vector) < final_length:
-            vector.append('NA')
-        return vector
-
     def fill_in_graph(self, frame, weather_data):
         """
         display temperature forecasts graph in a given frame
         :param frame: tkinter frame obj
         :param weather_data: dict
         """
-        weather_data = self.fill_in_vectors(weather_data)
+
         weather_data = self.unit_conversion(weather_data)
         self.plot_temperatures(frame, weather_data)
 
@@ -300,12 +265,18 @@ class WeatherApp:
 
 
 class GetWeatherForecasts:
+    """
+    class for getting weather forecast from multiple sources
+    """
 
     def __init__(self, place):
         self.weather_data = self.get_weather_data(place)
 
     def get_weather_data(self, place):
-        '''collects weather data from all sources and returns them in dictionary of lists'''
+        '''
+        collects weather data for given place from all sources and returns them in dictionary of lists
+        :param place: str
+        '''
         temperatures_openweather, dates_openweather = self.get_data_openweather(
             place)
         temperatures_in_pocasi, dates_in_pocasi = self.get_in_pocasi_data(
@@ -316,6 +287,7 @@ class GetWeatherForecasts:
         weather_data = self.prepare_weather_data(
             dates_openweather, temperatures_openweather, dates_in_pocasi, temperatures_in_pocasi, temperatures_yr, dates_yr)
         print(weather_data)
+        weather_data = self.fill_in_vectors(weather_data)
 
         return weather_data
 
@@ -486,6 +458,40 @@ class GetWeatherForecasts:
                 print(f"{indexes[i]} index was not found")
 
         return temperatures, dates
+
+    def fill_in_vectors(self, weather_data):
+        '''
+        uses fill_in_vector method to fill in lists in weather_data to length of the longest one
+        :param weather_data: dict
+        '''
+
+        weather_data['temperatures_openweather'] = self.fill_in_vector(
+            weather_data['temperatures_openweather'], weather_data['length'])
+
+        weather_data['dates_openweather'] = self.fill_in_vector(
+            weather_data['dates_openweather'], weather_data['length'])
+
+        weather_data['temperatures_in_pocasi'] = self.fill_in_vector(
+            weather_data['temperatures_in_pocasi'], weather_data['length'])
+        weather_data['dates_in_pocasi'] = self.fill_in_vector(
+            weather_data['dates_in_pocasi'], weather_data['length'])
+
+        weather_data['temperatures_yr'] = self.fill_in_vector(
+            weather_data['temperatures_yr'], weather_data['length'])
+        weather_data['dates_yr'] = self.fill_in_vector(
+            weather_data['dates_yr'], weather_data['length'])
+
+        return weather_data
+
+    def fill_in_vector(self, vector, final_length):
+        '''
+        appends given vector with "NA" until it reaches length final_length
+        :param vector: list
+        :param final_length: int
+        '''
+        while len(vector) < final_length:
+            vector.append('NA')
+        return vector
 
 
 if __name__ == "__main__":
