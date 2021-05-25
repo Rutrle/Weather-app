@@ -1,7 +1,6 @@
 import tkinter
 import datetime
 import requests
-import json
 from bs4 import BeautifulSoup
 import re
 from collections import defaultdict
