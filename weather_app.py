@@ -312,7 +312,7 @@ class GetWeatherForecasts:
         elif max_length == len(dates_in_pocasi):
             weather_data['dates'] = dates_in_pocasi
         else:
-            weather_data['dates'] = dates_in_pocasi
+            weather_data['dates'] = dates_openweather
 
         weather_data['temperatures_openweather'] = temperatures_openweather
         weather_data['temperatures_in_pocasi'] = temperatures_in_pocasi
